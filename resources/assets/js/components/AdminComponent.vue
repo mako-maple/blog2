@@ -3,9 +3,9 @@
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card card-default">
-          <div class="card-header">Example Component</div>
+          <div class="card-header">Admin Component</div>
           <div class="card-body">
-            I'm an example component.<br>
+            I'm an admin component.<br>
             <font size="+5">ID: {{ id }}</font><br>
             <font size="+5">Name: {{ name }}</font><br>
             <font size="+5">Role: {{ role }}</font>
