@@ -71413,6 +71413,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -71422,7 +71448,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       pagination: { sortBy: 'name', descending: true },
 
       users: [],
-      headers: [{ align: 'center', sortable: false, text: 'No' }, { align: 'left', sortable: true, text: '社員ID', value: 'loginid' }, { align: 'left', sortable: true, text: '氏名', value: 'name' }, { align: 'left', sortable: true, text: '権限', value: 'role' }]
+      headers: [{ align: 'center', sortable: false, text: 'No' }, { align: 'left', sortable: true, text: '社員ID', value: 'loginid' }, { align: 'left', sortable: true, text: '氏名', value: 'name' }, { align: 'left', sortable: true, text: '権限', value: 'role' }],
+
+      csvdownloading: false,
+      csvuploading: false
     };
   },
 
@@ -71453,6 +71482,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.loading = false;
         console.log(error.response);
       }.bind(this));
+    },
+
+    csvdownload: function csvdownload() {
+      var params = new URLSearchParams();
+      var config = {
+        responseType: 'blob',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      };
+      this.csvdownloading = true;
+      axios.post('/api/admin/user/download/', params, config).then(function (response) {
+        this.csvdownloading = false;
+        console.log(response);
+
+        // Get FileName
+        var filename = 'userlist.csv';
+        response.headers['content-disposition'].split(/;|\s/).forEach(function (value) {
+          if (value.match(/^filename=/i)) filename = value.replace(/^filename=/i, '');
+        });
+
+        // Save CSV
+        var url = window.URL.createObjectURL(new Blob([response.data]));
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+      }.bind(this)).catch(function (error) {
+        this.csvdownloading = false;
+        console.log(error.response);
+        alert('ダウンロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')');
+      }.bind(this));
+    },
+
+    csvupload: function csvupload() {
+      console.log('csv upload');
     }
 
   }
@@ -71612,6 +71676,80 @@ var render = function() {
                             },
                             slot: "progress"
                           })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-card-actions",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "indigo",
+                                block: "",
+                                flat: "",
+                                loading: _vm.csvdownloading,
+                                disabled: _vm.csvdownloading
+                              },
+                              on: { click: _vm.csvdownload }
+                            },
+                            [
+                              _c(
+                                "v-icon",
+                                { staticClass: "mr-1", attrs: { dark: "" } },
+                                [_vm._v("cloud_download")]
+                              ),
+                              _vm._v(" CSV ダウンロード\n              "),
+                              _c("v-progress-circular", {
+                                attrs: {
+                                  slot: "csvdownload",
+                                  indeterminate: "",
+                                  color: "indigo",
+                                  dark: ""
+                                },
+                                slot: "csvdownload"
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "indigo",
+                                block: "",
+                                flat: "",
+                                loading: _vm.csvuploading,
+                                disabled: _vm.csvuploading
+                              },
+                              on: { click: _vm.csvupload }
+                            },
+                            [
+                              _c(
+                                "v-icon",
+                                { staticClass: "mr-1", attrs: { dark: "" } },
+                                [_vm._v("cloud_upload")]
+                              ),
+                              _vm._v(" CSV アップロード\n              "),
+                              _c("v-progress-circular", {
+                                attrs: {
+                                  slot: "csvupload",
+                                  indeterminate: "",
+                                  color: "indigo",
+                                  dark: ""
+                                },
+                                slot: "csvupload"
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("v-spacer")
                         ],
                         1
                       )

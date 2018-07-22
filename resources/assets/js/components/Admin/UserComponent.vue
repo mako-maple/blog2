@@ -38,6 +38,32 @@
               </template>
             </v-data-table>
 
+            <v-spacer></v-spacer>
+
+            <v-card-actions>
+              <v-btn
+                color="indigo"
+                block flat
+                :loading="csvdownloading"
+                :disabled="csvdownloading"
+                @click="csvdownload"
+              >
+                <v-icon dark class="mr-1">cloud_download</v-icon> CSV ダウンロード
+                <v-progress-circular slot="csvdownload" indeterminate color="indigo" dark></v-progress-circular>
+              </v-btn>
+              <v-btn
+                color="indigo"
+                block flat
+                :loading="csvuploading"
+                :disabled="csvuploading"
+                @click="csvupload"
+              >
+                <v-icon dark class="mr-1">cloud_upload</v-icon> CSV アップロード
+                <v-progress-circular slot="csvupload" indeterminate color="indigo" dark></v-progress-circular>
+              </v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+
           </v-card>
         </v-flex>
       </v-layout>
@@ -59,6 +85,9 @@
         { align: 'left',   sortable: true,  text: '氏名',     value: 'name' },
         { align: 'left',   sortable: true,  text: '権限',     value: 'role' },
       ],
+
+      csvdownloading: false,
+      csvuploading: false,
     }),
 
     props: {
@@ -93,6 +122,45 @@
           this.loading = false
           console.log(error.response)
         }.bind(this))
+      },
+
+      csvdownload: function() {
+        var params = new URLSearchParams()
+        var config = {
+          responseType: 'blob',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        }
+        this.csvdownloading = true
+        axios.post('/api/admin/user/download/', params, config)
+
+        .then( function (response) {
+          this.csvdownloading = false
+          console.log(response)
+
+          // Get FileName
+          var filename = 'userlist.csv'
+          response.headers['content-disposition'].split(/;|\s/).forEach( function( value ) {
+            if(value.match(/^filename=/i)) filename = value.replace(/^filename=/i,'')
+          })
+
+          // Save CSV
+          const url = window.URL.createObjectURL(new Blob([response.data]))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', filename)
+          document.body.appendChild(link)
+          link.click()
+        }.bind(this))
+
+        .catch(function (error) {
+          this.csvdownloading = false
+          console.log(error.response)
+          alert('ダウンロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')')
+        }.bind(this))
+      },
+
+      csvupload: function() {
+        console.log('csv upload')
       },
 
     },
