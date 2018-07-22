@@ -1,28 +1,59 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card card-default">
-          <div class="card-header">Admin Component</div>
-          <div class="card-body">
-            I'm an admin component.<br>
-            <font size="+5">ID: {{ id }}</font><br>
-            <font size="+5">Name: {{ name }}</font><br>
-            <font size="+5">Role: {{ role }}</font>
-            
-            <button v-on:click="axiosLogout">logout</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <v-app id="app">
+    <v-navigation-drawer v-model="drawer" clipped fixed app >
+      <v-list dense>
+        <router-link to="/home">
+          <v-list-tile @click="drawer = !drawer">
+            <v-list-tile-action> <v-icon>home</v-icon> </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>HOME</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </router-link>
+
+        <router-link to="/admin/user">
+          <v-list-tile @click="drawer = !drawer">
+            <v-list-tile-action> <v-icon>supervisor_account</v-icon> </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>社員管理</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </router-link>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-toolbar color="indigo" dark fixed app clipped-left>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Application</v-toolbar-title>
+      <v-spacer></v-spacer>
+      {{ name }}
+      <v-btn icon @click="axiosLogout()">
+        <v-tooltip left>
+          <v-icon slot="activator" color="white" dark >exit_to_app</v-icon>
+          <span>ログアウト</span>
+        </v-tooltip>
+      </v-btn>
+    </v-toolbar>
+
+    <v-fade-transition mode="out-in">
+          <router-view></router-view>
+    </v-fade-transition>
+
+    <v-footer color="indigo" dark app fixed>
+      <span class="white--text ml-3">
+        &copy; 2018
+        <a class="white--text" href="https://qiita.com/nobu-maple">Qiita nobu-maple</a>
+      </span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
   export default {
     data: () => ({
+      drawer: false,
     }),
-    
+
     props: {
       id: String,
       name: String,
@@ -32,30 +63,26 @@
 
     mounted() {
       console.log('Component mounted.')
-      console.log('name :' + this.name )
-      console.log('logout :' + this.logout )
     },
-    
+
     methods: {
       axiosLogout: function() {
         var params = new URLSearchParams()
         axios.post(this.logout, params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+
         .then( function (response) {
           console.log(response)
         }.bind(this))
+
         .catch(function (error) {
           if (error.response.status === 401) {
-            var parser = new URL(this.logout)
-            location.href=parser.origin
-          }
-          else if (error.response.status === 419) {
-            alert('通信エラー : ' + error.response.status === 419)
             var parser = new URL(this.logout)
             location.href=parser.origin
           }
           console.log(error.response)
         }.bind(this))
       },
+
     },
   }
 </script>

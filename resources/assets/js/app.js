@@ -8,6 +8,29 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.Vuetify = require('vuetify');
+Vue.use(Vuetify);
+
+import 'vuetify/dist/vuetify.min.css';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
+
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
+
+Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('admin-component', require('./components/AdminComponent.vue'));
+
+const router = new VueRouter({
+  mode: 'history',
+  routes: [
+    { path: '/', component: require('./components/HomeComponent.vue')},
+    { path: '/home', component: require('./components/HomeComponent.vue')},
+    { path: '/admin/user', component: require('./components/Admin/UserComponent.vue'  )},
+  ]
+});
+
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,9 +38,8 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
-Vue.component('admin-component', require('./components/AdminComponent.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    router,
 });

@@ -18,5 +18,12 @@
         "laravel-mix": "^2.0",
         "lodash": "^4.17.4",
         "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "css-loader": "^0.28.11",
+        "material-design-icons-iconfont": "^3.0.3",
+        "moment": "^2.22.2",
+        "vue-router": "^3.0.1",
+        "vuetify": "^1.1.7"
     }
 }
