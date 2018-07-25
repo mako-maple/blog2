@@ -71439,6 +71439,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -71451,7 +71480,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       headers: [{ align: 'center', sortable: false, text: 'No' }, { align: 'left', sortable: true, text: '社員ID', value: 'loginid' }, { align: 'left', sortable: true, text: '氏名', value: 'name' }, { align: 'left', sortable: true, text: '権限', value: 'role' }],
 
       csvdownloading: false,
-      csvuploading: false
+      csvuploading: false,
+      csvupfile: null,
+      up_error: '',
+      up_result: ''
     };
   },
 
@@ -71515,8 +71547,61 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }.bind(this));
     },
 
-    csvupload: function csvupload() {
+    onFilePicked: function onFilePicked(e) {
+      console.log('on File Picked');
+      var files = e.target.files;
+      if (files[0] == undefined) return;
+      console.log("FILE: " + files[0].name);
+      console.log("SIZE: " + files[0].size);
+
+      // ファイル送信
+      this.csvupload(files[0]);
+    },
+
+    csvupload: function csvupload(file) {
       console.log('csv upload');
+      var config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      };
+
+      var formData = new FormData();
+      formData.append('csvfile', file);
+
+      this.up_error = '';
+      this.up_result = '';
+      this.csvuploading = true;
+      axios.post('/api/admin/user/upload/', formData, config).then(function (response) {
+        this.csvuploading = false;
+        console.log(response);
+
+        // error
+        if (response.data.import.errors) {
+          for (var i = 0; i < response.data.import.errors.length; i++) {
+            console.log(response.data.import.errors[i]);
+            this.up_error += 'CSV ' + response.data.import.errors[i].line + '行目 ';
+            this.up_error += response.data.import.errors[i].error + '\n';
+          }
+        }
+        if (response.data.import.insert) {
+          this.up_result += response.data.import.insert.length + ' レコードを新規登録しました' + '\n';
+        }
+        if (response.data.import.update) {
+          this.up_result += response.data.import.update.length + ' レコードを更新しました' + '\n';
+        }
+      }.bind(this)).catch(function (error) {
+        this.csvuploading = false;
+        console.log(error.response);
+        alert('アップロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')');
+        if (error.response.status === 401) {
+          var parser = new URL('http://yahoo.co.jp/');
+          location.href = parser.origin;
+        } else if (error.response.status === 419) {
+          alert('通信エラー : ' + error.response.status);
+          var parser = new URL('http://yahoo.co.jp/');
+          location.href = parser.origin;
+        }
+        console.log(error.response);
+      }.bind(this));
     }
 
   }
@@ -71675,9 +71760,64 @@ var render = function() {
                               indeterminate: ""
                             },
                             slot: "progress"
-                          })
+                          }),
+                          _vm._v(" "),
+                          _vm.up_result.length + _vm.up_error.length != 0
+                            ? _c("template", { slot: "footer" }, [
+                                _c(
+                                  "td",
+                                  { attrs: { colspan: "100%" } },
+                                  [
+                                    _c(
+                                      "v-alert",
+                                      {
+                                        attrs: {
+                                          dismissible: "",
+                                          type: "success",
+                                          outline: ""
+                                        },
+                                        model: {
+                                          value: _vm.up_result.length != 0,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.up_result,
+                                              "length != 0",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "up_result.length != 0"
+                                        }
+                                      },
+                                      [
+                                        _c("pre", [
+                                          _vm._v(_vm._s(_vm.up_result))
+                                        ])
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-alert",
+                                      {
+                                        attrs: {
+                                          value: _vm.up_error.length != 0,
+                                          dismissible: "",
+                                          outline: "",
+                                          type: "error"
+                                        }
+                                      },
+                                      [
+                                        _c("pre", [
+                                          _vm._v(_vm._s(_vm.up_error))
+                                        ])
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            : _vm._e()
                         ],
-                        1
+                        2
                       ),
                       _vm._v(" "),
                       _c("v-spacer"),
@@ -71727,7 +71867,11 @@ var render = function() {
                                 loading: _vm.csvuploading,
                                 disabled: _vm.csvuploading
                               },
-                              on: { click: _vm.csvupload }
+                              on: {
+                                click: function($event) {
+                                  _vm.$refs.csvup.click()
+                                }
+                              }
                             },
                             [
                               _c(
@@ -71738,16 +71882,28 @@ var render = function() {
                               _vm._v(" CSV アップロード\n              "),
                               _c("v-progress-circular", {
                                 attrs: {
-                                  slot: "csvupload",
+                                  slot: "csvuploading",
                                   indeterminate: "",
                                   color: "indigo",
                                   dark: ""
                                 },
-                                slot: "csvupload"
+                                slot: "csvuploading"
                               })
                             ],
                             1
                           ),
+                          _vm._v(" "),
+                          _c("input", {
+                            ref: "csvup",
+                            staticStyle: { display: "none" },
+                            attrs: {
+                              name: "file",
+                              type: "file",
+                              accept: ".csv,.txt"
+                            },
+                            domProps: { value: _vm.csvupfile },
+                            on: { change: _vm.onFilePicked }
+                          }),
                           _vm._v(" "),
                           _c("v-spacer")
                         ],
