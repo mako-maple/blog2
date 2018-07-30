@@ -35,45 +35,43 @@ class UserController extends Controller
         // アップロードファイルに対してのバリデート
         $validator = $csv->validate($request);
         if ($validator->fails() === true){
-            return ['error' => $validator->errors()];
+            return ['errors' => $validator->errors()];
         }
 
         // CSVをパース
         $rows = $csv->parse($request);
 
         // １行ずつ処理
-        foreach ($rows as $key => $value) {
+        foreach ($rows as $line => $value) {
 
             // 行データに対してのバリデート（必須・内容の確認）
             $v = $this->upload_row_validate($value);
 
             // ＣＳＶに問題があればバリデートエラーを記録 => 処理は継続
             if ($v->fails()) {
-              foreach ($v->errors()->all() as $message) {
-                Log::Debug(__CLASS__.':'.__FUNCTION__.'import data error line :'. $key .' message: '. $message);
-                $ret['errors'][] = ['line' => $key, 'error' => $message];
-              }
+                foreach ($v->errors()->all() as $message) {
+                    Log::Debug(__CLASS__.':'.__FUNCTION__.'import data error line :'. $line .' message: '. $message);
+                    $ret['errors'][] = ['line' => $line, 'error' => $message];
+                }
+                continue;
             }
 
             // ＣＳＶに問題がなければ 更新 or 挿入
-            else {
-              // SELECT
-              $user = User::where('loginid', $value['loginid'])->first();
+            $user = User::where('loginid', $value['loginid'])->first();
 
-              // 存在したら、更新
-              if( $user ) { 
-                Log::Debug(__CLASS__.':'.__FUNCTION__.'import update line :'. $key .' name: '. $value['name']);
+            // 存在したら、更新
+            if( $user ) { 
+                Log::Debug(__CLASS__.':'.__FUNCTION__.'import update line :'. $line .' name: '. $value['name']);
                 $user->fill($value)->save();
-                $ret['update'][] = ['line' => $key, 'name' => $value['name']];
-              }
+                $ret['update'][] = ['line' => $line, 'name' => $value['name']];
+            }
 
-              // ＤＢ未登録なら新規登録
-              else { 
-                Log::Debug(__CLASS__.':'.__FUNCTION__.'import insert line :'. $key .' name: '. $value['name']);
-                $value['password'] = Hash::make($value['loginid']);
+            // ＤＢ未登録なら新規登録
+            else { 
+                Log::Debug(__CLASS__.':'.__FUNCTION__.'import insert line :'. $line .' name: '. $value['name']);
+                $value['password'] = Hash::make($value['loginid']); // とりあえず初期パスワードは loginID にしとく
                 User::create($value);
-                $ret['insert'][] = ['line' => $key, 'name' => $value['name']];
-              }
+                $ret['insert'][] = ['line' => $line, 'name' => $value['name']];
             }
         }
         return ['import' => $ret];

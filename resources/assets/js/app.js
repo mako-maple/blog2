@@ -24,9 +24,11 @@ Vue.component('admin-component', require('./components/AdminComponent.vue'));
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/', component: require('./components/HomeComponent.vue')},
     { path: '/home', component: require('./components/HomeComponent.vue')},
     { path: '/admin/user', component: require('./components/Admin/UserComponent.vue'  )},
+
+    // catch all redirect
+    { path: '*', redirect: '/home' }
   ]
 });
 

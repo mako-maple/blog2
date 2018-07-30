@@ -25468,7 +25468,10 @@ Vue.component('admin-component', __webpack_require__(58));
 
 var router = new __WEBPACK_IMPORTED_MODULE_2_vue_router__["a" /* default */]({
   mode: 'history',
-  routes: [{ path: '/', component: __webpack_require__(15) }, { path: '/home', component: __webpack_require__(15) }, { path: '/admin/user', component: __webpack_require__(63) }]
+  routes: [{ path: '/home', component: __webpack_require__(15) }, { path: '/admin/user', component: __webpack_require__(63) },
+
+  // catch all redirect
+  { path: '*', redirect: '/home' }]
 });
 
 /**
@@ -71018,8 +71021,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     axiosLogout: function axiosLogout() {
-      var params = new URLSearchParams();
-      axios.post(this.logout, params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function (response) {
+      axios.post(this.logout).then(function (response) {
         console.log(response);
       }.bind(this)).catch(function (error) {
         if (error.response.status === 401) {
@@ -71029,7 +71031,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         console.log(error.response);
       }.bind(this));
     }
-
   }
 });
 
@@ -71195,7 +71196,7 @@ var render = function() {
       _c(
         "v-fade-transition",
         { attrs: { mode: "out-in" } },
-        [_c("router-view")],
+        [_c("router-view", { on: { "axios-logout": _vm.axiosLogout } })],
         1
       ),
       _vm._v(" "),
@@ -71468,6 +71469,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -71590,17 +71593,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
       }.bind(this)).catch(function (error) {
         this.csvuploading = false;
-        console.log(error.response);
+        console.log(error);
         alert('アップロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')');
         if (error.response.status === 401) {
-          var parser = new URL('http://yahoo.co.jp/');
-          location.href = parser.origin;
+          this.$emit('axios-logout');
         } else if (error.response.status === 419) {
-          alert('通信エラー : ' + error.response.status);
-          var parser = new URL('http://yahoo.co.jp/');
-          location.href = parser.origin;
+          this.$emit('axios-logout');
         }
-        console.log(error.response);
       }.bind(this));
     }
 

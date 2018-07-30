@@ -36,7 +36,7 @@
     </v-toolbar>
 
     <v-fade-transition mode="out-in">
-          <router-view></router-view>
+      <router-view @axios-logout="axiosLogout"></router-view>
     </v-fade-transition>
 
     <v-footer color="indigo" dark app fixed>
@@ -67,9 +67,7 @@
 
     methods: {
       axiosLogout: function() {
-        var params = new URLSearchParams()
-        axios.post(this.logout, params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-
+        axios.post(this.logout)
         .then( function (response) {
           console.log(response)
         }.bind(this))
@@ -82,7 +80,6 @@
           console.log(error.response)
         }.bind(this))
       },
-
     },
   }
 </script>

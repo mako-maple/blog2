@@ -72,6 +72,7 @@
                 <v-icon dark class="mr-1">cloud_download</v-icon> CSV ダウンロード
                 <v-progress-circular slot="csvdownload" indeterminate color="indigo" dark></v-progress-circular>
               </v-btn>
+
               <v-btn
                 color="indigo"
                 block flat
@@ -82,6 +83,7 @@
                 <v-icon dark class="mr-1">cloud_upload</v-icon> CSV アップロード
                 <v-progress-circular slot="csvuploading" indeterminate color="indigo" dark></v-progress-circular>
               </v-btn>
+
               <input
                 name="file"
                 :value="csvupfile"
@@ -237,19 +239,14 @@
 
         .catch(function (error) {
           this.csvuploading = false
-          console.log(error.response)
+          console.log(error)
           alert('アップロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')')
           if (error.response.status === 401) {
-            var parser = new URL('http://yahoo.co.jp/')
-            location.href=parser.origin
+            this.$emit('axios-logout')  
           }
           else if (error.response.status === 419) {
-            alert('通信エラー : ' + error.response.status)
-            var parser = new URL('http://yahoo.co.jp/')
-            location.href=parser.origin
+            this.$emit('axios-logout')  
           }
-          console.log(error.response)
-
         }.bind(this))
       },
 
