@@ -20,12 +20,14 @@ Vue.use(VueRouter);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('admin-component', require('./components/AdminComponent.vue'));
+Vue.component('sliplist', require('./components/Admin/PaySlipComponent.vue'));
 
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/home', component: require('./components/HomeComponent.vue')},
-    { path: '/admin/user', component: require('./components/Admin/UserComponent.vue'  )},
+    { path: '/home',       name: 'home',       component: require('./components/HomeComponent.vue')},
+    { path: '/admin/user', name: 'admin_user', component: require('./components/Admin/UserComponent.vue')},
+    { path: '/admin/slip', name: 'admin_slip', component: require('./components/Admin/CsvSlipComponent.vue')},
 
     // catch all redirect
     { path: '*', redirect: '/home' }

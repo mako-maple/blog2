@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-navigation-drawer v-model="drawer" clipped fixed app >
       <v-list dense>
-        <router-link to="/home">
+        <router-link :to="{name: 'home'}">
           <v-list-tile @click="drawer = !drawer">
             <v-list-tile-action> <v-icon>home</v-icon> </v-list-tile-action>
             <v-list-tile-content>
@@ -11,11 +11,20 @@
           </v-list-tile>
         </router-link>
 
-        <router-link to="/admin/user">
+        <router-link :to="{name: 'admin_user'}">
           <v-list-tile @click="drawer = !drawer">
             <v-list-tile-action> <v-icon>supervisor_account</v-icon> </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>社員管理</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </router-link>
+
+        <router-link :to="{name: 'admin_slip'}">
+          <v-list-tile @click="drawer = !drawer">
+            <v-list-tile-action> <v-icon>supervisor_account</v-icon> </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>給与管理</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </router-link>
