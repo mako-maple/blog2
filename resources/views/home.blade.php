@@ -28,6 +28,8 @@
         logout="{{ route('logout') }}"
       >
       </example-component>
+    @else
+      <a href="/login">LOGIN</a>
     @endcan
   </div>
   <script src=" {{ mix('js/app.js') }} "></script>

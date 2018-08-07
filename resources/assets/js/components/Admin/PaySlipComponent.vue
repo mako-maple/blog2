@@ -59,6 +59,7 @@
     beforeUpdate() {
       console.log('Component beforeUpdate.')
       if( this.show_target != this.target ) {
+      console.log('show_target:' + this.show_target + '　=　' + this.target )
         this.show_target = this.target
         this.setHeader(this.csvheader)
         this.initialize(this.target)
@@ -84,16 +85,16 @@
       
       setHeader(h) {
         this.headers = []
-        var cnt = 0
         for(var key in h) {
           var line = { sortable: true, align: 'right' }
-          if( key == 'no' ) line['align'] = 'center'
-          if( key == 'name' ) line['align'] = 'left'
-          if( key == 'download' ) line['align'] = 'center'
-          line['value'] = key
-          line['text'] = h[key]
-          this.headers[cnt] = line
-          cnt++
+          if( key == 'no' ) line.align = 'center'
+          if( key == 'name' ) line.align = 'left'
+          if( key == 'download' ) line.align = 'center'
+          line.value = key
+          line.text = h[key]
+console.log('---------------------------------')
+console.log( line )
+          this.headers[this.headers.length] = line
         }
 
 console.log('setHeader')

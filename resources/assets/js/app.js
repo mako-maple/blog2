@@ -30,10 +30,18 @@ const router = new VueRouter({
     { path: '/admin/slip', name: 'admin_slip', component: require('./components/Admin/CsvSlipComponent.vue')},
 
     // catch all redirect
-    { path: '*', redirect: '/home' }
+    { path: '*', component: {template: '<div>{{$route.params.link}}</div>',created() {location.href='/login'}}},
   ]
 });
 
+
+
+
+window.moment = require('moment')
+window.moment.locale('ja', {
+    weekdays: ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"],
+    weekdaysShort: ["日","月","火","水","木","金","土"],
+})
 
 
 /**

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Crypt;
 
 class PaySlip extends Model
 {
@@ -20,6 +21,30 @@ class PaySlip extends Model
     // カラム複合化
     public function setSlipAttribute($value)
     {
-        return Crypt::encrypt(serialize($value));
+        $this->attributes['slip'] = Crypt::encrypt(serialize($value));
     }
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'csv_id',
+        'no',
+        'target',
+        'user_id',
+        'loginid',
+        'slip',
+        'filename',
+        'download',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+    ];
 }

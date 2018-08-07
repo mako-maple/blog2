@@ -21,8 +21,8 @@ class CreatePaySlipsTable extends Migration
             $table->unsignedinteger('user_id')->comment('対象者ID');
             $table->string('loginid')->comment('対象者 ログインID');
             $table->text('slip')->comment('CSV行データ');
-            $table->string('name')->comment('ファイル名');
-            $table->unsignedinteger('download')->comment('ユーザのダウンロード回数');
+            $table->string('filename')->nullable()->comment('ファイル名');
+            $table->unsignedinteger('download')->default(0)->comment('ユーザのダウンロード回数');
             $table->timestamps();
             $table->softDeletes();
         });
