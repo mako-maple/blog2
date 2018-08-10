@@ -2,36 +2,13 @@
   <v-app id="app">
     <v-navigation-drawer v-model="drawer" clipped fixed app >
       <v-list dense>
-        <router-link :to="{name: 'home'}">
-          <v-list-tile @click="drawer = !drawer">
-            <v-list-tile-action> <v-icon>home</v-icon> </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>HOME</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
-
-        <router-link :to="{name: 'admin_user'}">
-          <v-list-tile @click="drawer = !drawer">
-            <v-list-tile-action> <v-icon>supervisor_account</v-icon> </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>社員管理</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
-
-        <router-link :to="{name: 'admin_slip'}">
-          <v-list-tile @click="drawer = !drawer">
-            <v-list-tile-action> <v-icon>supervisor_account</v-icon> </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>給与管理</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
+        <rlink linkname='home'></rlink> 
+        <rlink linkname='admin_user'></rlink> 
+        <rlink linkname='admin_csvslip'></rlink> 
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar color="indigo" dark fixed app clipped-left>
+    <v-toolbar color="primary" dark fixed app clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -44,11 +21,17 @@
       </v-btn>
     </v-toolbar>
 
-    <v-fade-transition mode="out-in">
-      <router-view @axios-logout="axiosLogout"></router-view>
-    </v-fade-transition>
+    <v-content>
+      <v-container fluid fill-height
+        <v-layout justify-center fluid column>
+          <v-fade-transition mode="out-in">
+            <router-view @axios-logout="axiosLogout"></router-view>
+          </v-fade-transition>
+        </v-layout>
+      </v-container>
+    </v-content>
 
-    <v-footer color="indigo" dark app fixed>
+    <v-footer color="primary" dark app fixed>
       <span class="white--text ml-3">
         &copy; 2018
         <a class="white--text" href="https://qiita.com/nobu-maple">Qiita nobu-maple</a>

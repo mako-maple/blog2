@@ -13,21 +13,21 @@
 <body>
   <div id="app">
     @can('admin-higher')
-      <admin-component 
+      <admin_component 
         id="{{ Auth::user()->id }}"
         name="{{ Auth::user()->name }}"
         role="{{ Auth::user()->role }}"
         logout="{{ route('logout') }}"
       >
-      </admin-component>
+      </admin_component>
     @elsecan('user-higher')
-      <example-component 
+      <example_component 
         id="{{ Auth::user()->id }}"
         name="{{ Auth::user()->name }}"
         role="{{ Auth::user()->role }}"
         logout="{{ route('logout') }}"
       >
-      </example-component>
+      </example_component>
     @else
       <a href="/login">LOGIN</a>
     @endcan

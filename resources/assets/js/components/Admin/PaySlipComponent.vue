@@ -1,38 +1,37 @@
 <template>
-          <v-card xs12 class="m-3">
+  <v-card xs12 class="m-3 px-3">
+    <v-card-title class="title">
+      <v-icon class="mr-2">supervisor_account</v-icon> CSV明細データ
+      <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
 
-            <v-card-title class="title">
-              <v-icon class="ml-2">supervisor_account</v-icon> CSV明細データ
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="tabledata"
+      :pagination.sync="pagination"
+      :rows-per-page-items='[10,25,50,{"text":"All","value":-1}]'
+      :loading="loading"
+      :search="search"
+      class="elevation-0 p-1"
+    >
 
-            <v-data-table
-              :headers="headers"
-              :items="tabledata"
-              :pagination.sync="pagination"
-              :rows-per-page-items='[10,25,50,{"text":"All","value":-1}]'
-              :loading="loading"
-              :search="search"
-              class="elevation-0"
-            >
+      <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
-              <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+      <template slot="items" slot-scope="props">
+        <template v-for="n in (headers.length - 1)">
+          <td :class="'text-xs-' + headers[n].align">{{ props.item[headers[n].value] }}</td>
+        </template>
+      </template>
 
-              <template slot="items" slot-scope="props">
-                <template v-for="n in (headers.length - 1)">
-                  <td :class="'text-xs-' + headers[n].align">{{ props.item[headers[n].value] }}</td>
-                </template>
-              </template>
-
-            </v-data-table>
-          </v-card>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
