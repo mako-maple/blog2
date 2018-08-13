@@ -65,6 +65,17 @@ Log::Debug('sliplist ('. $request->id .')');
           ->where('pay_slips.csv_id', $request->id)
           ->orderBy('pay_slips.no', 'asc')
           ->get();
+
+        $ret = $slips->toArray();
+        foreach($ret as $k => $v) {
+Log::Debug('lll: '. $k);
+Log::Debug('zzz: '. print_r($v,true));
+//          $r[$k] = array_merge($ret[$k}, $v['slip']);
+// タイプが array 以外のみを取り出したい
+          $r[] = array_merge($v, $v['slip']);
+        }
+
+Log::Debug('lll: '. print_r($r, true));
         return ['slips' => $slips];
     }
 

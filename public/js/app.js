@@ -89799,7 +89799,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       show_target: '',
       tabledata: [],
-      headers: [{ align: 'center', sortable: false, value: 'no', text: 'No' }, { align: 'left', sortable: true, value: 'target', text: '対象年月' }, { align: 'left', sortable: true, value: 'name', text: '氏名' }, { align: 'center', sortable: true, value: 'download', text: 'DL回数' }, { align: 'left', sortable: true, value: 'item0', text: 'item0' }, { align: 'left', sortable: true, value: 'item1', text: 'item1' }, { align: 'rigth', sortable: true, value: 'item2', text: 'item2' }, { align: 'rigth', sortable: true, value: 'item3', text: 'item3' }, { align: 'rigth', sortable: true, value: 'item4', text: 'item4' }, { align: 'rigth', sortable: true, value: 'item5', text: 'item5' }, { align: 'rigth', sortable: true, value: 'item6', text: 'item6' }, { align: 'rigth', sortable: true, value: 'item7', text: 'item7' }, { align: 'rigth', sortable: true, value: 'item8', text: 'item8' }, { align: 'rigth', sortable: true, value: 'item9', text: 'item9' }, { align: 'rigth', sortable: true, value: 'item10', text: 'item10' }, { align: 'rigth', sortable: true, value: 'item11', text: 'item11' }, { align: 'rigth', sortable: true, value: 'item12', text: 'item12' }, { align: 'rigth', sortable: true, value: 'item13', text: 'item13' }, { align: 'rigth', sortable: true, value: 'item14', text: 'item14' }, { align: 'rigth', sortable: true, value: 'item15', text: 'item15' }, { align: 'rigth', sortable: true, value: 'item16', text: 'item16' }, { align: 'rigth', sortable: true, value: 'item17', text: 'item17' }, { align: 'rigth', sortable: true, value: 'item18', text: 'item18' }, { align: 'rigth', sortable: true, value: 'item19', text: 'item19' }]
+      headers: []
+      /*
+              { align: 'center', sortable: false, value: 'no',     text: 'No',  },
+              { align: 'left',   sortable: true,  value: 'target', text: '対象年月',  },
+              { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
+              { align: 'center', sortable: true,  value: 'download',  text: 'DL回数',  },
+              { align: 'left',   sortable: true,  value: 'item0',  text: 'item0',  },
+              { align: 'left',   sortable: true,  value: 'item1',  text: 'item1',  },
+              { align: 'rigth',  sortable: true,  value: 'item2',  text: 'item2',  },
+              { align: 'rigth',  sortable: true,  value: 'item3',  text: 'item3',  },
+              { align: 'rigth',  sortable: true,  value: 'item4',  text: 'item4',  },
+              { align: 'rigth',  sortable: true,  value: 'item5',  text: 'item5',  },
+              { align: 'rigth',  sortable: true,  value: 'item6',  text: 'item6',  },
+              { align: 'rigth',  sortable: true,  value: 'item7',  text: 'item7',  },
+              { align: 'rigth',  sortable: true,  value: 'item8',  text: 'item8',  },
+              { align: 'rigth',  sortable: true,  value: 'item9',  text: 'item9',  },
+              { align: 'rigth',  sortable: true,  value: 'item10', text: 'item10', },
+              { align: 'rigth',  sortable: true,  value: 'item11', text: 'item11', },
+              { align: 'rigth',  sortable: true,  value: 'item12', text: 'item12', },
+              { align: 'rigth',  sortable: true,  value: 'item13', text: 'item13', },
+              { align: 'rigth',  sortable: true,  value: 'item14', text: 'item14', },
+              { align: 'rigth',  sortable: true,  value: 'item15', text: 'item15', },
+              { align: 'rigth',  sortable: true,  value: 'item16', text: 'item16', },
+              { align: 'rigth',  sortable: true,  value: 'item17', text: 'item17', },
+              { align: 'rigth',  sortable: true,  value: 'item18', text: 'item18', },
+              { align: 'rigth',  sortable: true,  value: 'item19', text: 'item19', },
+            ],
+      */
     };
   },
 
@@ -89827,41 +89854,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.loading = false;
         console.log(response);
         if (response.data.slips) {
-          this.tabledata = response.data.slips;
-          // ヘッダーのvalue名でループするか？ 2018.08.13
+          console.log('TABLE DATA0');
+          console.log(response.data.slips);
+          var td = response.data.slips;
           console.log('TABLE DATA');
-          console.log(this.tabledata);
-          for (var i = 0; this.tabledata.length; i++) {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-              for (var _iterator = Object.keys(this.tabledata[i].slip)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var j = _step.value;
-
-                //console.log(j + ' : ' + this.tabledata[i].slip[j])
-                this.tabledata[i][j] = this.tabledata[i].slip[j];
-              }
-            } catch (err) {
-              _didIteratorError = true;
-              _iteratorError = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                  _iterator.return();
-                }
-              } finally {
-                if (_didIteratorError) {
-                  throw _iteratorError;
-                }
-              }
-            }
-          }
+          console.log(td);
+          /*
+          // ヘッダーのvalue名でループするか？ 2018.08.13
+                      for(var i=0; td.length; i++){
+                        for(let j of Object.keys(td[i].slip)) {
+          //console.log(j + ' : ' + this.tabledata[i].slip[j])
+                          td[i][j] = td[i].slip[j]
+                        }
+                      }
+          */
+          this.tabledata = td;
         } else {
           console.log('response error! slip list not found');
         }
-        console.log('TABLE DATA');
+        console.log('TABLE DATA2');
         console.log(this.tabledata);
         console.log('HEADERS');
         console.log(this.headers);
@@ -89875,15 +89886,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       //console.log('set header')
       //console.log(h)
       //csvheader: { no: 'No', target: '対象', name: '氏名', },
+      //        { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
+      this.headers = [];
       for (var key in h) {
-        //console.log('key:'+ key)
-        for (var i = 0; i < this.headers.length; i++) {
-          if (this.headers[i].value == key) {
-            //console.log('value: '+ h[key])
-            this.headers[i].text = h[key];
-            break;
-          }
-        }
+        this.headers[this.headers.length] = {
+          align: 'right',
+          sortable: true,
+          value: key,
+          text: h[key]
+          /*
+          //console.log('key:'+ key)
+                    for(var i=0; i<this.headers.length; i++) {
+                      if(this.headers[i].value == key ) {
+          //console.log('value: '+ h[key])
+                        this.headers[i].text = h[key]
+                        break
+                      }
+          
+                    }
+          */
+        };
       }
       /*
                 var line = { sortable: true, align: 'right' }

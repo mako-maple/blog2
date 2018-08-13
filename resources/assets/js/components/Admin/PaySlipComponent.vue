@@ -48,7 +48,8 @@
 
       show_target: '',
       tabledata: [],
-      headers: [
+      headers: [],
+/*
         { align: 'center', sortable: false, value: 'no',     text: 'No',  },
         { align: 'left',   sortable: true,  value: 'target', text: '対象年月',  },
         { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
@@ -74,6 +75,7 @@
         { align: 'rigth',  sortable: true,  value: 'item18', text: 'item18', },
         { align: 'rigth',  sortable: true,  value: 'item19', text: 'item19', },
       ],
+*/
     }),
 
     created() {
@@ -102,21 +104,26 @@
           this.loading = false
           console.log(response)
           if (response.data.slips) {
-            this.tabledata = response.data.slips
-// ヘッダーのvalue名でループするか？ 2018.08.13
+console.log('TABLE DATA0')
+console.log(response.data.slips)
+            var td = response.data.slips
 console.log('TABLE DATA')
-console.log(this.tabledata)
-            for(var i=0; this.tabledata.length; i++){
-              for(let j of Object.keys(this.tabledata[i].slip)) {
+console.log(td)
+/*
+// ヘッダーのvalue名でループするか？ 2018.08.13
+            for(var i=0; td.length; i++){
+              for(let j of Object.keys(td[i].slip)) {
 //console.log(j + ' : ' + this.tabledata[i].slip[j])
-                this.tabledata[i][j] = this.tabledata[i].slip[j]
+                td[i][j] = td[i].slip[j]
               }
             }
+*/
+            this.tabledata = td
           }
           else {
             console.log('response error! slip list not found')
           }
-console.log('TABLE DATA')
+console.log('TABLE DATA2')
 console.log(this.tabledata)
 console.log('HEADERS')
 console.log(this.headers)
@@ -132,7 +139,16 @@ console.log(this.headers)
 //console.log('set header')
 //console.log(h)
         //csvheader: { no: 'No', target: '対象', name: '氏名', },
+//        { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
+        this.headers = []
         for(var key in h) {
+          this.headers[this.headers.length] = {
+            align: 'right',
+            sortable: true,
+            value: key,
+            text: h[key],
+          }
+/*
 //console.log('key:'+ key)
           for(var i=0; i<this.headers.length; i++) {
             if(this.headers[i].value == key ) {
@@ -140,7 +156,9 @@ console.log(this.headers)
               this.headers[i].text = h[key]
               break
             }
+
           }
+*/
         }
 /*
           var line = { sortable: true, align: 'right' }
