@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class PaySlip extends Model
 {
@@ -15,7 +16,7 @@ class PaySlip extends Model
     // カラム暗号化
     public function getSlipAttribute($value)
     {
-        return unserialize(Crypt::decrypt($value));
+        return unserialize( Crypt::decrypt( $value ));
     }
 
     // カラム複合化

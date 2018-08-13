@@ -84,7 +84,7 @@ class CSV
             //   header-flg が false なら、 data[999][999] = データ
             foreach ($value as $k => $v) {
                 if ($headerFlg) $data[$key][$header[$k]] = $v;
-                else            $data[$key][$k] = $v;
+                else            $data[$key]['item'.$k] = $v;
             }
         }
     

@@ -19,7 +19,7 @@
         :headers="headers"
         :items="tabledata"
         :pagination.sync="pagination"
-        :rows-per-page-items='[10,25,50,{"text":"All","value":-1}]'
+        :rows-per-page-items='[5,10,25,{"text":"All","value":-1}]'
         :loading="loading"
         :search="search"
         class="elevation-0 px-1"
@@ -29,9 +29,12 @@
         <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
         <template slot="items" slot-scope="props">
+<!--
           <tr @click="props.expanded = !props.expanded; sliptarget = props.expanded ? props.item.csvid : 0 " 
               v-bind:class="{'red--text': props.expanded}"
           >
+-->
+          <tr @click="showSlipList(props)" v-bind:class="{'red--text': props.expanded}">
             <td class="text-xs-center" xs1>{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
             <template v-for="n in (headers.length - 1)">
               <td :class="'text-xs-' + headers[n].align">{{ props.item[headers[n].value] }}</td>
@@ -92,7 +95,7 @@
         { align: 'left',   sortable: true,  text: '登録者',     value: 'name' },
         { align: 'center', sortable: true,  text: '登録日',     value: 'created_at' },
       ],
-      csvheader: { no: 'No', target: '対象', name: '氏名', },
+      csvheader: [],
 
       sliptarget: 0,
       target_YM: '',
@@ -115,7 +118,7 @@
       getSlipCsvList() {
         var params = new URLSearchParams()
         this.loading = true
-        axios.post('/api/admin/csvslip', params)
+        axios.post('/api/admin/slip/csvlist', params)
 
         .then( function (response) {
           this.loading = false
@@ -131,17 +134,6 @@ console.log(response)
         }.bind(this))
       },
 
-      onFilePicked: function(e) {
-        console.log('on File Picked')
-        const files = e.target.files
-        if(files[0] == undefined) return
-        console.log("FILE: " + files[0].name)
-        console.log("SIZE: " + files[0].size)
-
-        // ファイル送信
-        this.csvupload(files[0])
-      },
-
       csvuploaded: function(data) {
         console.log(data)
         
@@ -153,28 +145,20 @@ console.log(response)
         this.getSlipCsvList()
       },
 
-      csvupload: function(file) {
-        console.log('csv upload')
-          this.csvuploading = false
-          console.log(response)
-
-          // error
-          if (response.data.import.errors) {
-            for(var i=0; i<response.data.import.errors.length; i++) {
-              console.log(response.data.import.errors[i])
-              this.up_error +=  'CSV ' + response.data.import.errors[i].line + '行目 ' 
-              this.up_error +=  response.data.import.errors[i].error + '\n'
-            }
-          }
-          if (response.data.import.insert) {
-            this.up_result +=  response.data.import.insert.length + ' レコードを新規登録しました' + '\n'
-          }
-          if (response.data.import.update) {
-            this.up_result +=  response.data.import.update.length + ' レコードを更新しました' + '\n'
-          }
-          this.getSlipCsvList()
-
+      showSlipList(d) {
+        d.expanded = !d.expanded
+        if (d.expanded) {
+//          for( let key of Object.keys(d.item.header)) {
+//            this.csvheader[key] = d.item.header[key]
+//          }
+          this.csvheader = d.item.header
+          this.sliptarget = d.item.csvid
+        }
+        else {
+          this.sliptarget = 0
+        }
       },
+
     },
   }
 </script>
