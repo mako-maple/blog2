@@ -89784,6 +89784,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'payslips',
@@ -89856,24 +89859,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         if (response.data.slips) {
           console.log('TABLE DATA0');
           console.log(response.data.slips);
-          var td = response.data.slips;
-          console.log('TABLE DATA');
-          console.log(td);
-          /*
-          // ヘッダーのvalue名でループするか？ 2018.08.13
-                      for(var i=0; td.length; i++){
-                        for(let j of Object.keys(td[i].slip)) {
-          //console.log(j + ' : ' + this.tabledata[i].slip[j])
-                          td[i][j] = td[i].slip[j]
-                        }
-                      }
-          */
-          this.tabledata = td;
+          this.tabledata = response.data.slips;
         } else {
           console.log('response error! slip list not found');
         }
-        console.log('TABLE DATA2');
-        console.log(this.tabledata);
         console.log('HEADERS');
         console.log(this.headers);
       }.bind(this)).catch(function (error) {
@@ -89883,43 +89872,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     setHeader: function setHeader(h) {
-      //console.log('set header')
-      //console.log(h)
-      //csvheader: { no: 'No', target: '対象', name: '氏名', },
-      //        { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
       this.headers = [];
+      this.headers[this.headers.length] = { align: 'center', sortable: false, text: 'No' };
+      this.headers[this.headers.length] = { align: 'center', sortable: true, text: '年月', value: 'target' };
+      this.headers[this.headers.length] = { align: 'left', sortable: true, text: '氏名', value: 'name' };
+      this.headers[this.headers.length] = { align: 'left', sortable: true, text: '作成年月', value: 'created_at' };
       for (var key in h) {
+        if (key == 'item0') {
+          continue;
+        }
         this.headers[this.headers.length] = {
           align: 'right',
           sortable: true,
           value: key,
           text: h[key]
-          /*
-          //console.log('key:'+ key)
-                    for(var i=0; i<this.headers.length; i++) {
-                      if(this.headers[i].value == key ) {
-          //console.log('value: '+ h[key])
-                        this.headers[i].text = h[key]
-                        break
-                      }
-          
-                    }
-          */
         };
       }
-      /*
-                var line = { sortable: true, align: 'right' }
-                if( key == 'no' ) line.align = 'center'
-                if( key == 'name' ) line.align = 'left'
-                if( key == 'download' ) line.align = 'center'
-                line.value = key
-                line.text = h[key]
-                this.headers[this.headers.length] = line
-              }
-      */
-
-      //console.log('setHeader')
-      //console.log(this.headers)
     }
   }
 });
@@ -89985,18 +89953,35 @@ var render = function() {
               key: "items",
               fn: function(props) {
                 return [
-                  _vm._l(_vm.headers.length - 1, function(n) {
-                    return [
-                      _c(
-                        "td",
-                        {
-                          class: "text-xs-" + _vm.headers[n].align,
-                          staticStyle: { "white-space": "nowrap" }
-                        },
-                        [_vm._v(_vm._s(props.item[_vm.headers[n].value]))]
-                      )
-                    ]
-                  })
+                  _c(
+                    "tr",
+                    [
+                      _c("td", { staticClass: "text-xs-center" }, [
+                        _vm._v(
+                          _vm._s(
+                            props.index +
+                              1 +
+                              (_vm.pagination.page - 1) *
+                                _vm.pagination.rowsPerPage
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.headers.length - 1, function(n) {
+                        return [
+                          _c(
+                            "td",
+                            {
+                              class: "text-xs-" + _vm.headers[n].align,
+                              staticStyle: { "white-space": "nowrap" }
+                            },
+                            [_vm._v(_vm._s(props.item[_vm.headers[n].value]))]
+                          )
+                        ]
+                      })
+                    ],
+                    2
+                  )
                 ]
               }
             }

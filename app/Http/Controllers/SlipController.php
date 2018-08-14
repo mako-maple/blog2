@@ -70,13 +70,13 @@ Log::Debug('sliplist ('. $request->id .')');
         foreach($ret as $k => $v) {
 Log::Debug('lll: '. $k);
 Log::Debug('zzz: '. print_r($v,true));
-//          $r[$k] = array_merge($ret[$k}, $v['slip']);
-// タイプが array 以外のみを取り出したい
-          $r[] = array_merge($v, $v['slip']);
+          $wk = $v['slip'];
+          unset($v['slip']);
+          $r[] = array_merge($v, $wk);
         }
 
 Log::Debug('lll: '. print_r($r, true));
-        return ['slips' => $slips];
+        return ['slips' => $r];
     }
 
     /**

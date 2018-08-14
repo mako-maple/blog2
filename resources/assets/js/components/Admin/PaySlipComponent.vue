@@ -25,9 +25,12 @@
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
       <template slot="items" slot-scope="props">
-        <template v-for="n in (headers.length - 1)">
-          <td style="white-space: nowrap;" :class="'text-xs-' + headers[n].align">{{ props.item[headers[n].value] }}</td>
-        </template>
+        <tr>
+          <td class="text-xs-center">{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
+          <template v-for="n in (headers.length - 1)">
+            <td :class="'text-xs-' + headers[n].align" style="white-space: nowrap;">{{ props.item[headers[n].value] }}</td>
+          </template>
+        </tr>
       </template>
 
     </v-data-table>
@@ -106,25 +109,11 @@
           if (response.data.slips) {
 console.log('TABLE DATA0')
 console.log(response.data.slips)
-            var td = response.data.slips
-console.log('TABLE DATA')
-console.log(td)
-/*
-// ヘッダーのvalue名でループするか？ 2018.08.13
-            for(var i=0; td.length; i++){
-              for(let j of Object.keys(td[i].slip)) {
-//console.log(j + ' : ' + this.tabledata[i].slip[j])
-                td[i][j] = td[i].slip[j]
-              }
-            }
-*/
-            this.tabledata = td
+            this.tabledata = response.data.slips
           }
           else {
             console.log('response error! slip list not found')
           }
-console.log('TABLE DATA2')
-console.log(this.tabledata)
 console.log('HEADERS')
 console.log(this.headers)
         }.bind(this))
@@ -136,43 +125,20 @@ console.log(this.headers)
       },
       
       setHeader(h) {
-//console.log('set header')
-//console.log(h)
-        //csvheader: { no: 'No', target: '対象', name: '氏名', },
-//        { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
         this.headers = []
+        this.headers[this.headers.length] = { align: 'center', sortable: false, text: 'No', }
+        this.headers[this.headers.length] = { align: 'center', sortable: true , text: '年月', value: 'target', }
+        this.headers[this.headers.length] = { align: 'left',   sortable: true , text: '氏名', value: 'name', }
+        this.headers[this.headers.length] = { align: 'left',   sortable: true , text: '作成年月', value: 'created_at', }
         for(var key in h) {
+          if (key == 'item0') { continue; }
           this.headers[this.headers.length] = {
             align: 'right',
             sortable: true,
             value: key,
             text: h[key],
           }
-/*
-//console.log('key:'+ key)
-          for(var i=0; i<this.headers.length; i++) {
-            if(this.headers[i].value == key ) {
-//console.log('value: '+ h[key])
-              this.headers[i].text = h[key]
-              break
-            }
-
-          }
-*/
         }
-/*
-          var line = { sortable: true, align: 'right' }
-          if( key == 'no' ) line.align = 'center'
-          if( key == 'name' ) line.align = 'left'
-          if( key == 'download' ) line.align = 'center'
-          line.value = key
-          line.text = h[key]
-          this.headers[this.headers.length] = line
-        }
-*/
-
-//console.log('setHeader')
-//console.log(this.headers)
       },
     },
   }
