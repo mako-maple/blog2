@@ -16,7 +16,7 @@ class CreatePaySlipsTable extends Migration
         Schema::create('pay_slips', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedinteger('csv_id')->comment('CSV ID');
-            $table->unsignedinteger('no')->comment('CSV 行番号');
+            $table->unsignedinteger('line')->comment('CSV 行番号');
             $table->char('target',6)->comment('明細対象月:yyyymm');
             $table->unsignedinteger('user_id')->comment('対象者ID');
             $table->string('loginid')->comment('対象者 ログインID');

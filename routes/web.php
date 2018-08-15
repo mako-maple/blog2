@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
   Route::post('/api/admin/slip/csvlist',  'SlipController@csvlist');
   Route::post('/api/admin/slip/sliplist', 'SlipController@sliplist');
   Route::post('/api/admin/slip/upload',   'SlipController@upload');
+  Route::post('/api/admin/slip/html',     'SlipController@html');
+  Route::post('/api/admin/slip/pdf',      'SlipController@pdf');
 
 });
 

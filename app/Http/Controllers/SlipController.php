@@ -7,9 +7,12 @@ use App\CsvSlip;
 use App\PaySlip;
 use App\Services\CSV;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use TCPDF;
+use TCPDF_FONTS;
 
 class SlipController extends Controller
 {
@@ -52,7 +55,7 @@ Log::Debug('sliplist ('. $request->id .')');
               'users.name'
             , 'pay_slips.id AS slipid'
             , 'pay_slips.csv_id'
-            , 'pay_slips.no'
+            , 'pay_slips.line'
             , 'pay_slips.target'
             , 'pay_slips.user_id'
             , 'pay_slips.loginid'
@@ -63,20 +66,18 @@ Log::Debug('sliplist ('. $request->id .')');
           )
           ->join('users', 'users.id', '=', 'pay_slips.user_id')
           ->where('pay_slips.csv_id', $request->id)
-          ->orderBy('pay_slips.no', 'asc')
+          ->orderBy('pay_slips.line', 'asc')
           ->get();
 
         $ret = $slips->toArray();
         foreach($ret as $k => $v) {
-Log::Debug('lll: '. $k);
-Log::Debug('zzz: '. print_r($v,true));
           $wk = $v['slip'];
           unset($v['slip']);
           $r[] = array_merge($v, $wk);
         }
 
-Log::Debug('lll: '. print_r($r, true));
         return ['slips' => $r];
+       // return ['slips' => $ret];
     }
 
     /**
@@ -87,46 +88,6 @@ Log::Debug('lll: '. print_r($r, true));
      */
     public function upload(Request $request)
     {
-
-/*
-    // 想定CSV構成
-    // 1行目は印刷用タイトル
-    // 2行目からデータ １人１行で明細情報の７０項目を指定
-
-     1. ユーザID   :  社員を特定するID（メールアドレスを指定する想定）
-     2. ファイル名 :  ファイル名に付け加える文字列（通常 YYYY年MM月給与明細.pdf -> YYYY年MM月ｘｘｘ.pdf になる）
-     3. 通信事項   :  明細に出力したい文言を指定。改行する場合は ” ～～ ”でククルこと
-     4. 振込額     :  差引支給額
-     5. 総支給額   : 
-     6. 総控除額   : 
-     7. 予備１
-     8. 予備２
-     9. 予備３
-    10. 予備４
-    11. 支給０１        31. 控除０１        51. 勤怠０１
-    12. 支給０２        32. 控除０２        52. 勤怠０２
-    13. 支給０３        33. 控除０３        53. 勤怠０３
-    14. 支給０４        34. 控除０４        54. 勤怠０４
-    15. 支給０５        35. 控除０５        55. 勤怠０５
-    16. 支給０６        36. 控除０６        56. 勤怠０６
-    17. 支給０７        37. 控除０７        57. 勤怠０７
-    18. 支給０８        38. 控除０８        58. 勤怠０８
-    19. 支給０９        39. 控除０９        59. 勤怠０９
-    20. 支給１０        40. 控除１０        60. 勤怠１０
-    21. 支給１１        41. 控除１１        61. 勤怠１１
-    22. 支給１２        42. 控除１２        62. 勤怠１２
-    23. 支給１３        43. 控除１３        63. 勤怠１３
-    24. 支給１４        44. 控除１４        64. 勤怠１４
-    25. 支給１５        45. 控除１５        65. 勤怠１５
-    26. 支給１６        46. 控除１６        66. 勤怠１６
-    27. 支給１７        47. 控除１７        67. 勤怠１７
-    28. 支給１８        48. 控除１８        68. 勤怠１８
-    29. 支給１９        49. 控除１９        69. 勤怠１９
-    30. 支給２０        50. 控除２０        70. 勤怠２０
-
-ユーザID,ファイル名,通信事項,振込額,総支給額,総控除額,予備１,予備２,予備３,予備４,支給０１,支給０２,支給０３,支給０４,支給０５,支給０６,支給０７,支給０８,支給０９,支給１０,支給１１,支給１２,支給１３,支給１４,支給１５,支給１６,支給１７,支給１８,支給１９,支給２０,控除０１,控除０２,控除０３,控除０４,控除０５,控除０６,控除０７,控除０８,控除０９,控除１０,控除１１,控除１２,控除１３,控除１４,控除１５,控除１６,控除１７,控除１８,控除１９,控除２０,勤怠０１,勤怠０２,勤怠０３,勤怠０４,勤怠０５,勤怠０６,勤怠０７,勤怠０８,勤怠０９,勤怠１０,勤怠１１,勤怠１２,勤怠１３,勤怠１４,勤怠１５,勤怠１６,勤怠１７,勤怠１８,勤怠１９,勤怠２０,
-
-*/
        // CSV操作準備
         $csv = new CSV;
 
@@ -169,8 +130,6 @@ Log::Debug('lll: '. print_r($r, true));
               $ret['csvslip_id'] = $csvslip['id'];
 
               $headercnt = count($value);
-//Log::Debug('Header: '. print_r($value,true));
-//Log::Debug('HeaderCNT: '. $headercnt);
               continue;
             }
 
@@ -187,17 +146,19 @@ Log::Debug('lll: '. print_r($r, true));
             // CSV行データ設定
             $data = array();
             $data['csv_id'] = $csvslip_id;
-            $data['no'] = $line;
+            $data['line'] = $line;
             $data['target'] = $target;
             $data['slip'] = $value;
             $data['loginid'] = trim($value[self::C_USERID]);
 
             // ＰＤＦファイル名設定 - 指定があれば指定ファイル名を設定
+Log::Debug('UP CSV FILENAME: '. $value[self::C_FILENAME]);
+Log::Debug('UP CSV FILENAME: '. trim($value[self::C_FILENAME]));
             if (trim($value[self::C_FILENAME]) != '') {
-              $data['filename'] = '';
+              $data['filename'] = trim($value[self::C_FILENAME]);
             }
             else {
-              $data['filename'] = trim($value[self::C_FILENAME]);
+              $data['filename'] = self::C_DEFAULT_FILENAME;
             }
 
             // CSVに指定されたユーザ(社員)が存在しなければエラー
@@ -212,11 +173,11 @@ Log::Debug('lll: '. print_r($r, true));
             else {
               $inscnt++;
               $data['user_id'] = $user['id'];
-//Log::Debug('user: '. print_r($user, true));
             }
 
             // CSV行データ保存
             //Log::Debug('INSERT PAY_SLIP:'. print_r($data,true));
+Log::Debug('UP CSV ROW: '. print_r($data, true));
             PaySlip::create($data);
         }
 
@@ -226,7 +187,6 @@ Log::Debug('lll: '. print_r($r, true));
         $csvslip->line = $inscnt;
         $csvslip->error = $errcnt;
         $csvslip->save();
-//        Log::Debug('csv slip:'. print_r($csvslip,true));
 
         // 戻る
         return ['import' => $ret];
@@ -241,6 +201,150 @@ Log::Debug('lll: '. print_r($r, true));
       if (preg_match('/^20([1-9]{1}[0-9]{1})(0[1-9]{1}|1[0-2]{1})$/', $target))
       return $target;
       return false;
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function pdf(Request $request)
+    {
+        mb_internal_encoding("UTF8");
+Log::Debug('PDF : csv_id : '. $request['csv_id']);
+Log::Debug('PDF : slipid : '. $request['slipid']);
+        // GET DATA
+        $csv  = CsvSlip::find($request['csv_id']);
+        $slip = PaySlip::find($request['slipid']);
+        $user = User::find($slip->user_id);
+Log::Debug('CSV :'. print_r($csv->toArray(), true));
+Log::Debug('SLIP:'. print_r($slip->toArray(), true));
+Log::Debug('USER:'. print_r($user->toArray(), true));
+
+        // SET DATA 
+        $ym = substr($slip->target,0,4) .'年'. substr($slip->target,4,2) .'月';
+        $data['company'] = "あいうえお株式会社";
+        $data['pay_ym'] = mb_convert_kana($ym, 'N');
+        $data['name'] = $user->name;
+
+        // SET BLANK
+        $data['title'] = array_fill(0, 61, '');
+        $data['data'] = array_fill(0, 61, '');
+
+        // SET HEADER
+        $header = $csv->header;
+        array_shift($header);
+        array_shift($header);
+        $cnt = 0;
+        foreach($header as $v) {
+          $data['title'][$cnt++] = $v;
+        }
+
+        // SET DATA
+        $csvrow = $slip->slip; 
+        array_shift($csvrow);
+        array_shift($csvrow);
+        $cnt = 0;
+        foreach($csvrow as $v) {
+          $data['data'][$cnt++] = $v;
+        }
+
+        $html = view("document.slip2", $data)->render();
+Log::Debug('HTML\n'.$html);
+
+        // PDF 生成メイン　－　A4 縦に設定
+        $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetAuthor('aiueo.inc.');
+        $pdf->SetCreator('aiu eo');
+
+
+        // 日本語フォント設定
+        $pdf->setFont('kozminproregular','',11);
+
+        // ページ追加
+        $pdf->addPage();
+
+        // HTMLを描画、viewの指定と変数代入 - document/pdf.blade.php
+        //$pdf->writeHTML(view("document.pdf3", $data)->render());
+        $pdf->writeHTML($html);
+
+        // 出力指定 ファイル名、拡張子、D(ダウンロード)
+//$AA =         $pdf->output('o' . '.pdf', 'S');
+//          $pdf->output('o.pdf', 'I');
+//        return k['pdf' => $S];
+          
+        return ['pdf' => $html];
+     
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function html(Request $request)
+    {
+
+        mb_internal_encoding("UTF8");
+
+        // ダミーデータ設定
+        $data['company'] = "あいうえお株式会社";
+        $data['pay_ym'] = "２０１８年０８月";
+        $data['name'] = "あいう　えお";
+
+        for( $i=0; $i<=60; $i++ ){
+          $wk = sprintf('%02d', $i);
+          $data['title'.$wk] = 'タイトル'.mb_convert_kana("$wk", 'N');
+          if($i<=40) $data['data'.$wk] = 99999000 + $i;
+          else       $data['data'.$wk] = 999.00 + ($i/100);
+        }
+
+        $data['data60'] = "むかしむかし、あるところに、おじいさんとおばあさんが住んでいました。
+　おじいさんは山へ柴刈りに、おばあさんは川へ洗濯に行きました。
+　おばあさんが川で洗濯をしていると、ドンブラコ、ドンブラコと、大きな桃が流れてきました。
+「おや、これは良いおみやげになるわ」
+　おばあさんは大きな桃をひろいあげて、家に持ち帰りました。
+　そして、おじいさんとおばあさんが桃を食べようと桃を切ってみると、なんと中から元気の良い男の赤ちゃんが飛び出してきました。
+「これはきっと、神さまがくださったにちがいない」
+";
+//　子どものいなかったおじいさんとおばあさんは、大喜びです。
+//　桃から生まれた男の子を、おじいさんとおばあさんは桃太郎と名付けました。
+//　桃太郎はスクスク育って、やがて強い男の子になりました。
+//";
+        $html = view("document.slip1", $data)->render();
+Log::Debug('HTML\n'.$html);
+
+
+        // PDF 生成メイン　－　A4 縦に設定
+        $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetAuthor('aiueo.inc.');
+        $pdf->SetCreator('aiu eo');
+
+
+        // 日本語フォント設定
+        $pdf->setFont('kozminproregular','',11);
+
+        // ページ追加
+        $pdf->addPage();
+
+        // HTMLを描画、viewの指定と変数代入 - document/pdf.blade.php
+        //$pdf->writeHTML(view("document.pdf3", $data)->render());
+        $pdf->writeHTML($html);
+
+        // 出力指定 ファイル名、拡張子、D(ダウンロード)
+        $pdf->output('201808_aiueo' . '.pdf', 'D');
+        return;
+          
+//        return ['html' => $html];
     }
 
     /**

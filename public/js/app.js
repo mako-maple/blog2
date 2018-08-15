@@ -89410,11 +89410,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -89429,7 +89424,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       csvheader: [],
 
       sliptarget: 0,
-      target_YM: ''
+      upload_YM: '',
+      slip_YM: ''
+
     };
   },
 
@@ -89437,7 +89434,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   created: function created() {
     console.log('Component created.');
-    this.target_YM = moment().format('YYYYMM').toString();
+    this.upload_YM = moment().format('YYYYMM').toString();
     this.initialize();
   },
 
@@ -89452,9 +89449,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       axios.post('/api/admin/slip/csvlist', params).then(function (response) {
         this.loading = false;
         console.log(response);
-        console.log('api/admin/csvslip');
-        console.log(response);
-        this.tabledata = response.data.csvslips;
+        if (response.data.csvslips) {
+          this.tabledata = response.data.csvslips;
+        }
       }.bind(this)).catch(function (error) {
         this.loading = false;
         console.log(error);
@@ -89475,11 +89472,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     showSlipList: function showSlipList(d) {
       d.expanded = !d.expanded;
-      if (d.expanded) {
-        //          for( let key of Object.keys(d.item.header)) {
-        //            this.csvheader[key] = d.item.header[key]
-        //          }
+      if (this.sliptarget == 0) {
         this.csvheader = d.item.header;
+        this.slip_YM = d.item.target;
         this.sliptarget = d.item.csvid;
       } else {
         this.sliptarget = 0;
@@ -89515,7 +89510,7 @@ var render = function() {
                   _vm._s(_vm.$route.meta.name) +
                   " " +
                   _vm._s(/* 給与管理 */) +
-                  "\n        "
+                  "\n      "
               ),
               _c("v-spacer"),
               _vm._v(" "),
@@ -89566,7 +89561,9 @@ var render = function() {
                       _c(
                         "tr",
                         {
-                          class: { "red--text": props.expanded },
+                          class: {
+                            "red--text": _vm.sliptarget == props.item.csvid
+                          },
                           on: {
                             click: function($event) {
                               _vm.showSlipList(props)
@@ -89596,7 +89593,10 @@ var render = function() {
                             return [
                               _c(
                                 "td",
-                                { class: "text-xs-" + _vm.headers[n].align },
+                                {
+                                  class: "text-xs-" + _vm.headers[n].align,
+                                  staticStyle: { "white-space": "nowrap" }
+                                },
                                 [
                                   _vm._v(
                                     _vm._s(props.item[_vm.headers[n].value])
@@ -89640,11 +89640,11 @@ var render = function() {
                       required: ""
                     },
                     model: {
-                      value: _vm.target_YM,
+                      value: _vm.upload_YM,
                       callback: function($$v) {
-                        _vm.target_YM = $$v
+                        _vm.upload_YM = $$v
                       },
-                      expression: "target_YM"
+                      expression: "upload_YM"
                     }
                   })
                 ],
@@ -89654,7 +89654,7 @@ var render = function() {
               _c("csv_upload", {
                 attrs: {
                   url: "/api/admin/slip/upload/",
-                  updata: { key: "target", value: _vm.target_YM }
+                  updata: { key: "target", value: _vm.upload_YM }
                 },
                 on: {
                   csvuploaded: _vm.csvuploaded,
@@ -89677,7 +89677,12 @@ var render = function() {
       _vm.sliptarget != 0
         ? [
             _c("admin_sliplist", {
-              attrs: { target: _vm.sliptarget, csvheader: _vm.csvheader }
+              ref: "aslst",
+              attrs: {
+                target: _vm.sliptarget,
+                csvheader: _vm.csvheader,
+                yyyymm: _vm.slip_YM
+              }
             })
           ]
         : _vm._e()
@@ -89792,44 +89797,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'payslips',
   props: {
     target: Number,
-    csvheader: Object
+    csvheader: Object,
+    yyyymm: String
   },
   data: function data() {
     return {
       loading: true,
       search: '',
-      pagination: { sortBy: 'no', descending: false },
+      pagination: { sortBy: 'line', descending: false },
 
+      card_title: '',
       show_target: '',
       tabledata: [],
-      headers: []
-      /*
-              { align: 'center', sortable: false, value: 'no',     text: 'No',  },
-              { align: 'left',   sortable: true,  value: 'target', text: '対象年月',  },
-              { align: 'left',   sortable: true,  value: 'name',   text: '氏名',  },
-              { align: 'center', sortable: true,  value: 'download',  text: 'DL回数',  },
-              { align: 'left',   sortable: true,  value: 'item0',  text: 'item0',  },
-              { align: 'left',   sortable: true,  value: 'item1',  text: 'item1',  },
-              { align: 'rigth',  sortable: true,  value: 'item2',  text: 'item2',  },
-              { align: 'rigth',  sortable: true,  value: 'item3',  text: 'item3',  },
-              { align: 'rigth',  sortable: true,  value: 'item4',  text: 'item4',  },
-              { align: 'rigth',  sortable: true,  value: 'item5',  text: 'item5',  },
-              { align: 'rigth',  sortable: true,  value: 'item6',  text: 'item6',  },
-              { align: 'rigth',  sortable: true,  value: 'item7',  text: 'item7',  },
-              { align: 'rigth',  sortable: true,  value: 'item8',  text: 'item8',  },
-              { align: 'rigth',  sortable: true,  value: 'item9',  text: 'item9',  },
-              { align: 'rigth',  sortable: true,  value: 'item10', text: 'item10', },
-              { align: 'rigth',  sortable: true,  value: 'item11', text: 'item11', },
-              { align: 'rigth',  sortable: true,  value: 'item12', text: 'item12', },
-              { align: 'rigth',  sortable: true,  value: 'item13', text: 'item13', },
-              { align: 'rigth',  sortable: true,  value: 'item14', text: 'item14', },
-              { align: 'rigth',  sortable: true,  value: 'item15', text: 'item15', },
-              { align: 'rigth',  sortable: true,  value: 'item16', text: 'item16', },
-              { align: 'rigth',  sortable: true,  value: 'item17', text: 'item17', },
-              { align: 'rigth',  sortable: true,  value: 'item18', text: 'item18', },
-              { align: 'rigth',  sortable: true,  value: 'item19', text: 'item19', },
-            ],
-      */
+      headers: [{ align: 'center', sortable: false, text: 'No' }, { align: 'left', sortable: true, value: 'name', text: '氏名' }, { align: 'center', sortable: true, value: 'line', text: 'CSV行' }, { align: 'center', sortable: true, value: 'download', text: 'DL回数' }, { align: 'left', sortable: true, value: 'filename', text: '修正ファイル名' }],
+      sliptarget: 0
     };
   },
 
@@ -89838,16 +89819,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   beforeUpdate: function beforeUpdate() {
     console.log('Component beforeUpdate.');
-    if (this.show_target != this.target) {
-      console.log('show_target:' + this.show_target + '　=　' + this.target);
-      this.show_target = this.target;
-      this.setHeader(this.csvheader);
-      this.initialize(this.target);
-    }
+    this.update();
   },
 
 
   methods: {
+    update: function update() {
+      if (this.show_target != this.target) {
+        this.card_title = String(this.yyyymm).substr(0, 4) + '年' + String(this.yyyymm).substr(4, 2) + '月';
+        this.show_target = this.target;
+        //        this.setHeader(this.csvheader)
+        this.initialize(this.target);
+      }
+    },
+
+
     initialize: function initialize(id) {
       var params = new URLSearchParams();
       params.append('id', id);
@@ -89855,7 +89841,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.loading = true;
       axios.post('/api/admin/slip/sliplist/', params).then(function (response) {
         this.loading = false;
-        console.log(response);
+        //console.log(response)
         if (response.data.slips) {
           console.log('TABLE DATA0');
           console.log(response.data.slips);
@@ -89863,20 +89849,67 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         } else {
           console.log('response error! slip list not found');
         }
-        console.log('HEADERS');
-        console.log(this.headers);
+        //console.log('HEADERS')
+        //console.log(this.headers)
       }.bind(this)).catch(function (error) {
         this.loading = false;
         console.log(error);
       }.bind(this));
     },
 
+    showSlip: function showSlip(i) {
+      console.log('showSlip');
+      console.log(i);
+      var params = new URLSearchParams();
+      params.append('csv_id', i.item.csv_id);
+      params.append('slipid', i.item.slipid);
+
+      this.loading = true;
+      axios.post('/api/admin/slip/pdf/', params).then(function (response) {
+        this.loading = false;
+        //console.log(response)
+        if (response.data) {
+          //console.log('HTML')
+          //console.log(response.data)
+
+
+          // CSV データ取得
+          var blob = new Blob([response.data.pdf]);
+
+          // ファイル名設定
+          var filename = i.item.filename + '_' + this.card_title + '.pdf'; // + moment(Date.now()).format("YYYYMMDD_HHmmss") + '.csv'
+
+          // IE11
+          if (window.navigator.msSaveBlob) {
+            window.navigator.msSaveBlob(blob, filename);
+            window.navigator.msSaveOrOpenBlob(blob, filename);
+          }
+
+          // Chrome, Firefox
+          else {
+              var url = window.URL.createObjectURL(blob);
+              window.open(url, '_blank');
+              var link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', filename);
+              document.body.appendChild(link);
+              link.click();
+            }
+        } else {
+          console.log('response error! slip not found');
+        }
+      }.bind(this)).catch(function (error) {
+        this.loading = false;
+        console.log(error);
+      }.bind(this));
+    },
     setHeader: function setHeader(h) {
       this.headers = [];
       this.headers[this.headers.length] = { align: 'center', sortable: false, text: 'No' };
       this.headers[this.headers.length] = { align: 'center', sortable: true, text: '年月', value: 'target' };
       this.headers[this.headers.length] = { align: 'left', sortable: true, text: '氏名', value: 'name' };
-      this.headers[this.headers.length] = { align: 'left', sortable: true, text: '作成年月', value: 'created_at' };
+      this.headers[this.headers.length] = { align: 'right', sortable: true, text: 'DL回数', value: 'download' };
+      this.headers[this.headers.length] = { align: 'left', sortable: true, text: 'ファイル名', value: 'filename' };
       for (var key in h) {
         if (key == 'item0') {
           continue;
@@ -89909,7 +89942,7 @@ var render = function() {
         { staticClass: "title" },
         [
           _c("v-icon", { staticClass: "mr-2" }, [_vm._v("supervisor_account")]),
-          _vm._v(" CSV明細データ\n    "),
+          _vm._v(" CSV明細データ (" + _vm._s(_vm.card_title) + ")\n    "),
           _c("v-spacer"),
           _vm._v(" "),
           _c("v-text-field", {
@@ -89955,6 +89988,16 @@ var render = function() {
                 return [
                   _c(
                     "tr",
+                    {
+                      class: {
+                        "red--text": _vm.sliptarget == props.item.slipid
+                      },
+                      on: {
+                        click: function($event) {
+                          _vm.showSlip(props)
+                        }
+                      }
+                    },
                     [
                       _c("td", { staticClass: "text-xs-center" }, [
                         _vm._v(
@@ -89969,14 +90012,15 @@ var render = function() {
                       _vm._v(" "),
                       _vm._l(_vm.headers.length - 1, function(n) {
                         return [
-                          _c(
-                            "td",
-                            {
-                              class: "text-xs-" + _vm.headers[n].align,
-                              staticStyle: { "white-space": "nowrap" }
-                            },
-                            [_vm._v(_vm._s(props.item[_vm.headers[n].value]))]
-                          )
+                          _c("td", {
+                            class: "text-xs-" + _vm.headers[n].align,
+                            staticStyle: { "white-space": "nowrap" },
+                            domProps: {
+                              textContent: _vm._s(
+                                props.item[_vm.headers[n].value]
+                              )
+                            }
+                          })
                         ]
                       })
                     ],

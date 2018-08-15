@@ -29,15 +29,10 @@
         <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
         <template slot="items" slot-scope="props">
-<!--
-          <tr @click="props.expanded = !props.expanded; sliptarget = props.expanded ? props.item.csvid : 0 " 
-              v-bind:class="{'red--text': props.expanded}"
-          >
--->
-          <tr @click="showSlipList(props)" v-bind:class="{'red--text': props.expanded}">
+          <tr @click="showSlipList(props)" v-bind:class="{'red--text': sliptarget == props.item.csvid}">
             <td class="text-xs-center" xs1>{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
             <template v-for="n in (headers.length - 1)">
-              <td :class="'text-xs-' + headers[n].align">{{ props.item[headers[n].value] }}</td>
+              <td :class="'text-xs-' + headers[n].align" style="white-space: nowrap;">{{ props.item[headers[n].value] }}</td>
             </template>
           </tr>
         </template>
@@ -51,7 +46,7 @@
           <v-text-field 
             type="text"
             label="対象年月" 
-            v-model="target_YM" 
+            v-model="upload_YM" 
             name="" 
             placeholder="明細の対象年月入力(YYYYMM)" 
             required>
@@ -60,7 +55,7 @@
 
         <csv_upload 
           url="/api/admin/slip/upload/"
-          :updata="{key: 'target', value: target_YM}" 
+          :updata="{key: 'target', value: upload_YM}" 
           @csvuploaded="csvuploaded" 
           @axios-logout="$emit('axios-logout')"
         >
@@ -71,7 +66,7 @@
     <v-spacer></v-spacer>
 
     <template v-if="sliptarget != 0">
-      <admin_sliplist :target="sliptarget" :csvheader="csvheader"></admin_sliplist>
+      <admin_sliplist ref="aslst" :target="sliptarget" :csvheader="csvheader" :yyyymm="slip_YM"></admin_sliplist>
     </template>
 
   </v-flex>
@@ -98,7 +93,9 @@
       csvheader: [],
 
       sliptarget: 0,
-      target_YM: '',
+      upload_YM: '',
+      slip_YM: '',
+      
     }),
 
     props: {
@@ -106,7 +103,7 @@
 
     created() {
       console.log('Component created.')
-      this.target_YM = moment().format('YYYYMM').toString()
+      this.upload_YM = moment().format('YYYYMM').toString()
       this.initialize()
     },
 
@@ -123,9 +120,9 @@
         .then( function (response) {
           this.loading = false
           console.log(response)
-console.log('api/admin/csvslip')
-console.log(response)
-          this.tabledata = response.data.csvslips
+          if(response.data.csvslips) {
+            this.tabledata = response.data.csvslips
+          }
         }.bind(this))
 
         .catch(function (error) {
@@ -147,11 +144,9 @@ console.log(response)
 
       showSlipList(d) {
         d.expanded = !d.expanded
-        if (d.expanded) {
-//          for( let key of Object.keys(d.item.header)) {
-//            this.csvheader[key] = d.item.header[key]
-//          }
+        if (this.sliptarget == 0) {
           this.csvheader = d.item.header
+          this.slip_YM = d.item.target
           this.sliptarget = d.item.csvid
         }
         else {

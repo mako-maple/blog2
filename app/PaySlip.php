@@ -32,7 +32,7 @@ class PaySlip extends Model
      */
     protected $fillable = [
         'csv_id',
-        'no',
+        'line',
         'target',
         'user_id',
         'loginid',
