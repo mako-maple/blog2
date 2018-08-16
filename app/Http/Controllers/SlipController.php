@@ -49,7 +49,6 @@ class SlipController extends Controller
 
     public function sliplist(Request $request)
     {
-Log::Debug('sliplist ('. $request->id .')');
         // ほとんどＳＱＬ書いてる・・ほかの方法勉強セネバ
         $slips = PaySlip::select(
               'users.name'
@@ -76,8 +75,8 @@ Log::Debug('sliplist ('. $request->id .')');
           $r[] = array_merge($v, $wk);
         }
 
-        return ['slips' => $r];
-       // return ['slips' => $ret];
+        //return ['slips' => $r];
+        return ['slips' => $ret];
     }
 
     /**
@@ -203,7 +202,6 @@ Log::Debug('UP CSV ROW: '. print_r($data, true));
       return false;
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -275,10 +273,26 @@ Log::Debug('HTML\n'.$html);
 
         // 出力指定 ファイル名、拡張子、D(ダウンロード)
 //$AA =         $pdf->output('o' . '.pdf', 'S');
-//          $pdf->output('o.pdf', 'I');
+          $pdf->output('laravel.pdf', 'D');
+          return;
 //        return k['pdf' => $S];
           
-        return ['pdf' => $html];
+/*
+        return response(
+            $pdf->output('abc.pdf', 'S'),
+            200,
+            [
+'Content-Description' => 'File Transfer',
+'Content-Disposition' => 'attachment; filename="201808_aiueo.pdf"',
+'Content-Transfer-Encoding' => 'binary',
+'Content-Type' => 'application/pdf',
+'Content-Type' => 'application/download',
+'Content-Type' => 'application/force-download',
+'Content-Type' => 'application/octet-stream'
+            ]
+        );
+*/
+//        return ['pdf' => $html];
      
     }
 

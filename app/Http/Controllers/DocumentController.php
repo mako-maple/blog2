@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use TCPDF;
 use TCPDF_FONTS;
+use App\User;
+use App\CsvSlip;
+use App\PaySlip;
 
 class DocumentController extends Controller
 {
@@ -52,6 +55,73 @@ Log::Debug('HTML\n'.$html);
         $pdf->SetAuthor('aiueo.inc.');
         $pdf->SetCreator('aiu eo');
 
+
+        // 日本語フォント設定
+        $pdf->setFont('kozminproregular','',11);
+
+        // ページ追加
+        $pdf->addPage();
+
+        // HTMLを描画、viewの指定と変数代入 - document/pdf.blade.php
+        //$pdf->writeHTML(view("document.pdf3", $data)->render());
+        $pdf->writeHTML($html);
+
+        // 出力指定 ファイル名、拡張子、D(ダウンロード)
+        $pdf->output('201808_aiueo' . '.pdf', 'D');
+        return;
+   }
+
+    public function pdf()
+    {
+        mb_internal_encoding("UTF8");
+//Log::Debug('PDF : csv_id : '. $request['csv_id']);
+//Log::Debug('PDF : slipid : '. $request['slipid']);
+        // GET DATA
+        $csv  = CsvSlip::find(4); //$request['csv_id']);
+        $slip = PaySlip::find(8); //$request['slipid']);
+        $user = User::find($slip->user_id);
+Log::Debug('CSV :'. print_r($csv->toArray(), true));
+Log::Debug('SLIP:'. print_r($slip->toArray(), true));
+Log::Debug('USER:'. print_r($user->toArray(), true));
+
+        // SET DATA 
+        $ym = substr($slip->target,0,4) .'年'. substr($slip->target,4,2) .'月';
+        $data['company'] = "あいうえお株式会社";
+        $data['pay_ym'] = mb_convert_kana($ym, 'N');
+        $data['name'] = $user->name;
+
+        // SET BLANK
+        $data['title'] = array_fill(0, 61, '');
+        $data['data'] = array_fill(0, 61, '');
+
+        // SET HEADER
+        $header = $csv->header;
+        array_shift($header);
+        array_shift($header);
+        $cnt = 0;
+        foreach($header as $v) {
+          $data['title'][$cnt++] = $v;
+        }
+
+        // SET DATA
+        $csvrow = $slip->slip; 
+        array_shift($csvrow);
+        array_shift($csvrow);
+        $cnt = 0;
+        foreach($csvrow as $v) {
+          $data['data'][$cnt++] = $v;
+        }
+
+        $html = view("document.slip2", $data)->render();
+Log::Debug('HTML\n'.$html);
+
+        // PDF 生成メイン　－　A4 縦に設定
+        $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetAuthor('aiueo.inc.');
+        $pdf->SetCreator('aiu eo');
 
         // 日本語フォント設定
         $pdf->setFont('kozminproregular','',11);

@@ -18,6 +18,7 @@ Route::get('/', function () {
 //Auth::routes();
 
 Route::get('/pdf/test', 'DocumentController@downloadPdf');
+Route::get('/pdf/test2', 'DocumentController@pdf');
 
 // Authentication Routes...
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');

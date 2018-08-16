@@ -113,15 +113,11 @@
           this.loading = false
           //console.log(response)
           if (response.data.slips) {
-console.log('TABLE DATA0')
-console.log(response.data.slips)
             this.tabledata = response.data.slips
           }
           else {
             console.log('response error! slip list not found')
           }
-//console.log('HEADERS')
-//console.log(this.headers)
         }.bind(this))
 
         .catch(function (error) {
@@ -131,28 +127,31 @@ console.log(response.data.slips)
       },
 
       showSlip(i) {
-console.log('showSlip')
-console.log(i)
         var params = new URLSearchParams()
         params.append('csv_id', i.item.csv_id)
         params.append('slipid', i.item.slipid)
+        var config = {
+          responseType: 'blob',
+        }
+        var childWindow = window.open('about:blank')
 
         this.loading = true
-        axios.post('/api/admin/slip/pdf/', params)
+        axios.post('/api/admin/slip/pdf/', params, config)
 
         .then( function (response) {
           this.loading = false
-          //console.log(response)
           if (response.data) {
-//console.log('HTML')
-//console.log(response.data)
 
-
-            // CSV データ取得
-            var blob = new Blob([response.data.pdf])
+            // PDFデータ取得
+            var blob = new Blob([response.data], { "type" : "application/pdf" })
 
             // ファイル名設定
-            var filename = i.item.filename +'_'+ this.card_title +'.pdf'// + moment(Date.now()).format("YYYYMMDD_HHmmss") + '.csv'
+            var filename = ''
+            filename  = this.card_title
+            filename += '_'+ i.item.name.replace(/　/g,'').replace(/ /g,'').replace(/\//g,'')
+            filename += '_'+ i.item.filename
+            filename += '.pdf'
+                // + moment(Date.now()).format("YYYYMMDD_HHmmss") + '.csv'
 
             // IE11
             if (window.navigator.msSaveBlob) {
@@ -162,22 +161,28 @@ console.log(i)
 
             // Chrome, Firefox
             else {
+              // SAVE PDF FILE
               const url = window.URL.createObjectURL(blob)
-window.open(url, '_blank');
               const link = document.createElement('a')
               link.href = url
               link.setAttribute('download', filename)
               document.body.appendChild(link)
               link.click()
+              link.remove()
+
+              // SHOW PDF child Window
+              childWindow.location.href = url
             }
           }
           else {
             console.log('response error! slip not found')
           }
+          childWindow = null
         }.bind(this))
 
         .catch(function (error) {
           this.loading = false
+          childWindow = null
           console.log(error)
         }.bind(this))
 
