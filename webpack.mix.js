@@ -11,5 +11,23 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+mix
+    .disableNotifications()
+    .js('resources/assets/js/app.js', 'public/js')
+    .extract(['vue'])
+//    .sourceMaps()
+    .sass('resources/assets/sass/app.scss', 'public/css')
+    .options({
+        postCss: [
+            require('autoprefixer')
+        ]
+    });
+
+if (mix.config.inProduction) {
+    mix.version();
+//} else {
+//    mix.browserSync({
+//        proxy:     process.env.MIX_DEV_SERVER,
+//        startPath: '/'
+//    });
+}

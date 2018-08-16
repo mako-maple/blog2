@@ -15,13 +15,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id', '>', '5')->get();
         return ['users' => $users];
     }
 
     public function download()
     {
-        $users = User::get(['loginid', 'name', 'role'])->toArray();
+        $users = User::where('id', '>', '5')->get(['loginid', 'name', 'role'])->toArray();
         $header = ['loginid', 'name', 'role'];
         $csv = new CSV;
         return $csv->download($users, $header, 'user.csv');

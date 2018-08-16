@@ -8,6 +8,7 @@
 
   <title>Laravel5.6 + Vue.js2.5</title>
 
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
 <body>
@@ -32,6 +33,8 @@
       <a href="/login">LOGIN</a>
     @endcan
   </div>
+  <script src=" {{ mix('js/manifest.js') }} "></script>
+  <script src=" {{ mix('js/vendor.js') }} "></script>
   <script src=" {{ mix('js/app.js') }} "></script>
 </body>
 </html>
