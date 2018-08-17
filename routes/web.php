@@ -30,7 +30,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
 
   // USER
-  Route::post('/api/admin/user/',         'UserController@index')->name('admin/user');
+  Route::post('/api/admin/user',          'UserController@index')->name('admin/user');
   Route::post('/api/admin/user/download', 'UserController@download');
   Route::post('/api/admin/user/upload',   'UserController@upload');
 

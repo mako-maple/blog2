@@ -54,7 +54,7 @@
         </v-flex>
 
         <csv_upload 
-          url="/api/admin/slip/upload/"
+          url="/api/admin/slip/upload"
           :updata="{key: 'target', value: upload_YM}" 
           @csvuploaded="csvuploaded" 
           @axios-logout="$emit('axios-logout')"

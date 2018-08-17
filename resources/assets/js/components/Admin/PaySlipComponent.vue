@@ -107,7 +107,7 @@
         params.append('id', id)
 
         this.loading = true
-        axios.post('/api/admin/slip/sliplist/', params)
+        axios.post('/api/admin/slip/sliplist', params)
 
         .then( function (response) {
           this.loading = false

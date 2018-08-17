@@ -44,8 +44,8 @@
         <v-btn flat block ref="closebtn" @click="clearResult" color="secondary">閉じる</v-btn>
       </div>
       <v-card-actions>
-        <csv_download url="/api/admin/user/download/"></csv_download>
-        <csv_upload url="/api/admin/user/upload/" @csvuploaded="csvuploaded" @axios-logout="$emit('axios-logout')"></csv_upload>
+        <csv_download url="/api/admin/user/download"></csv_download>
+        <csv_upload url="/api/admin/user/upload" @csvuploaded="csvuploaded" @axios-logout="$emit('axios-logout')"></csv_upload>
       </v-card-actions>
       
     </v-card>
@@ -92,7 +92,7 @@
       getUsers: function() {
         var params = new URLSearchParams()
         this.loading = true
-        axios.post('/api/admin/user/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        axios.post('/api/admin/user', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 
         .then( function (response) {
           this.loading = false

@@ -33,8 +33,8 @@
 
     <v-footer color="primary" dark app fixed>
       <span class="white--text ml-3">
-        &copy; 2018
-        <a class="white--text" href="https://qiita.com/nobu-maple">Qiita nobu-maple</a>
+        Copyright &copy; Career Management Inc. All Rights Reserved.
+{{ /*        <a class="white--text" href="https://qiita.com/nobu-maple">Qiita nobu-maple</a> */ }}
       </span>
     </v-footer>
   </v-app>
