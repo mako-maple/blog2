@@ -98,11 +98,8 @@
       
     }),
 
-    props: {
-    },
-
     created() {
-      console.log('Component created.')
+      console.log('Component created. :: CsvSlipComponent')
       this.upload_YM = moment().format('YYYYMM').toString()
       this.initialize()
     },
@@ -113,9 +110,9 @@
       },
 
       getSlipCsvList() {
-        var params = new URLSearchParams()
+        //var params = new URLSearchParams()
         this.loading = true
-        axios.post('/api/admin/slip/csvlist', params)
+        axios.post('/api/admin/slip/csvlist') // , params)
 
         .then( function (response) {
           this.loading = false
