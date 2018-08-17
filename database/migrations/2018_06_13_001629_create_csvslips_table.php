@@ -20,7 +20,7 @@ class CreateCsvSlipsTable extends Migration
             $table->text('header')->comment('CSVヘッダー（１行目）');
             $table->unsignedinteger('line')->default(0)->comment('対象者数（CSV行数）');
             $table->unsignedinteger('error')->default(0)->comment('エラー数');
-            $table->string('upload_userid')->comment('登録者');
+            $table->unsignedinteger('upload_userid')->comment('登録者');
             $table->timestamps();
         });
     }
