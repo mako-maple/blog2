@@ -62,13 +62,9 @@ Log::Debug('USER:'. print_r($user->toArray(), true));
           $data['data'][$cnt++] = $v;
         }
 
-        // PDF 出力
+        // PDF用HTML生成 
         $html = view("document.slip2", $data)->render();
-        return makePdf($html);
-    }
 
-    private function makePdf(string $html)
-    {
         // PDF 生成メイン　－　A4 縦に設定
         $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
         $pdf->setPrintHeader(false);
