@@ -133,10 +133,9 @@
         var config = {
           responseType: 'blob',
         }
-//        var childWindow = window.open('about:blank')
 
         this.loading = true
-        axios.post('/api/admin/slip/pdf/', params, config)
+        axios.post('/api/admin/pdf/slip', params, config)
 
         .then( function (response) {
           this.loading = false
@@ -169,20 +168,15 @@
               document.body.appendChild(link)
               link.click()
               link.remove()
-
-              // SHOW PDF child Window
-//              childWindow.location.href = url
             }
           }
           else {
             console.log('response error! slip not found')
           }
-//          childWindow = null
         }.bind(this))
 
         .catch(function (error) {
           this.loading = false
-//          childWindow = null
           console.log(error)
         }.bind(this))
 
