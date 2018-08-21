@@ -10,7 +10,7 @@
 
     <v-toolbar color="primary" dark fixed app clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>{{title}}</v-toolbar-title>
       <v-spacer></v-spacer>
       {{ name }}
       <v-btn icon @click="axiosLogout()">
@@ -32,9 +32,7 @@
     </v-content>
 
     <v-footer color="primary" dark app fixed>
-      <span class="white--text ml-3">
-        Copyright &copy; Career Management Inc. All Rights Reserved.
-      </span>
+      <span class="white--text ml-3" v-html="footer"></span>
     </v-footer>
   </v-app>
 </template>
@@ -43,6 +41,8 @@
   export default {
     data: () => ({
       drawer: false,
+      footer: 'footer',
+      title: 'title',
     }),
 
     props: {
@@ -53,7 +53,10 @@
     },
 
     mounted() {
-      console.log('Component mounted.')
+      console.log('AdminComponent mounted.')
+      console.log(process.env)
+      if (process.env.MIX_FOOTER_COPY) { this.footer = process.env.MIX_FOOTER_COPY }
+      if (process.env.MIX_APP_NAME) { this.title = process.env.MIX_APP_NAME }
     },
 
     methods: {

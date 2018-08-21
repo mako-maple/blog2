@@ -38,11 +38,20 @@ return [
             'channels' => ['single'],
         ],
 
+        'kuri' => [
+            'driver' => 'monolog',
+            'handler' => \App\Loggers\KuriMonologHandler::class,
+            'level' => 'debug',
+        ],
+
         'single' => [
-            //'driver' => 'single',
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
+            'formatter' => Monolog\Formatter\HtmlFormatter::class,
+            'formatter_with' => [
+                'dateFormat' => 'Y-m-d H:i:s.u',
+            ],
         ],
 
         'daily' => [

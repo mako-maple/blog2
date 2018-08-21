@@ -68,10 +68,10 @@
       ],
 
       up: { 
-        insert: 'eeeeeeeeeeeeeee',
-        update: 'ddddddddddddddd',
-        error: 'ccccccccccccccccccccccccc',
-        result: true,
+        insert: '',
+        update: '',
+        error: '',
+        result: false,
       },
     }),
 

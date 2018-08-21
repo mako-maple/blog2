@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>Laravel5.6 + Vue.js2.5</title>
+  <title>{{ env('MIX_APP_NAME') }}</title>
 
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
@@ -30,7 +30,7 @@
       >
       </example_component>
     @else
-      <a href="/login">LOGIN</a>
+      @yield('content')
     @endcan
   </div>
   <script src=" {{ mix('js/manifest.js') }} "></script>

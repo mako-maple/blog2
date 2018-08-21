@@ -5,7 +5,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+require('./bootstrap')
+require('babel-polyfill')
 
 // Vue
 import Vue from 'vue'
@@ -15,14 +16,17 @@ import colors from 'vuetify/es5/util/colors'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify, {
   theme: {
-    primary: colors.deepOrange.base,
-    secondary: colors.orange.base,
-    accent: colors.indigo.base,
+//    primary: colors.deepOrange.base,
+//    secondary: colors.orange.base,
+//    accent: colors.indigo.base,
+    primary: colors.indigo.base,
+    secondary: colors.blue.base,
+    accent: colors.amber.base,
   }
 });
 
-import 'vuetify/dist/vuetify.min.css';
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 // Vue-Router
 import router from './router'

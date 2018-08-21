@@ -66,7 +66,8 @@
     <v-spacer></v-spacer>
 
     <template v-if="sliptarget != 0">
-      <admin_sliplist ref="aslst" :target="sliptarget" :csvheader="csvheader" :yyyymm="slip_YM"></admin_sliplist>
+      <!-- admin_sliplist ref="aslst" :target="sliptarget" :csvheader="csvheader" :yyyymm="slip_YM"></admin_sliplist -->
+      <admin_sliplist ref="aslst" :target="sliptarget" :yyyymm="slip_YM"></admin_sliplist>
     </template>
 
   </v-flex>
@@ -90,7 +91,7 @@
         { align: 'left',   sortable: true,  text: '登録者',     value: 'name' },
         { align: 'center', sortable: true,  text: '登録日',     value: 'created_at' },
       ],
-      csvheader: [],
+      //csvheader: [],
 
       sliptarget: 0,
       upload_YM: '',
@@ -142,7 +143,7 @@
       showSlipList(d) {
         d.expanded = !d.expanded
         if (this.sliptarget == 0) {
-          this.csvheader = d.item.header
+//          this.csvheader = d.item.header
           this.slip_YM = d.item.target
           this.sliptarget = d.item.csvid
         }
