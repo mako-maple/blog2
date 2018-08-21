@@ -35,12 +35,13 @@ Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
   Route::post('/api/admin/user/download', 'UserController@download');
   Route::post('/api/admin/user/upload',   'UserController@upload');
 
-  // Slip 
-  Route::post('/api/admin/slip/csvlist',  'AAAController@csvlist');
+  // SLIP 
+  Route::post('/api/admin/slip/csvlist',  'SlipController@csvlist');
   Route::post('/api/admin/slip/sliplist', 'SlipController@sliplist');
   Route::post('/api/admin/slip/upload',   'SlipController@upload');
-  Route::post('/api/admin/slip/html',     'SlipController@html');
-  Route::post('/api/admin/slip/pdf',      'SlipController@pdf');
+
+  // PDF
+  Route::post('/api/admin/pdf/slip',      'PDFController@slip');
 
 });
 

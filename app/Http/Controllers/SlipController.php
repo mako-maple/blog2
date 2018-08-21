@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use TCPDF;
-use TCPDF_FONTS;
 
 class SlipController extends Controller
 {
@@ -151,8 +148,6 @@ class SlipController extends Controller
             $data['loginid'] = trim($value[self::C_USERID]);
 
             // ＰＤＦファイル名設定 - 指定があれば指定ファイル名を設定
-Log::Debug('UP CSV FILENAME: '. $value[self::C_FILENAME]);
-Log::Debug('UP CSV FILENAME: '. trim($value[self::C_FILENAME]));
             if (trim($value[self::C_FILENAME]) != '') {
               $data['filename'] = trim($value[self::C_FILENAME]);
             }
@@ -167,7 +162,7 @@ Log::Debug('UP CSV FILENAME: '. trim($value[self::C_FILENAME]));
               Log::Debug('import data error:'. print_r($ret['errors'][count($ret['errors'])-1], true));
               $errcnt++;
               $data['user_id'] = '';
-              continue;
+        //      continue;
             }
             else {
               $inscnt++;
@@ -175,8 +170,7 @@ Log::Debug('UP CSV FILENAME: '. trim($value[self::C_FILENAME]));
             }
 
             // CSV行データ保存
-            //Log::Debug('INSERT PAY_SLIP:'. print_r($data,true));
-Log::Debug('UP CSV ROW: '. print_r($data, true));
+            //Log::Debug('UP CSV ROW: '. print_r($data, true));
             PaySlip::create($data);
         }
 
@@ -200,175 +194,5 @@ Log::Debug('UP CSV ROW: '. print_r($data, true));
       if (preg_match('/^20([1-9]{1}[0-9]{1})(0[1-9]{1}|1[0-2]{1})$/', $target))
       return $target;
       return false;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function pdf(Request $request)
-    {
-        mb_internal_encoding("UTF8");
-Log::Debug('PDF : csv_id : '. $request['csv_id']);
-Log::Debug('PDF : slipid : '. $request['slipid']);
-        // GET DATA
-        $csv  = CsvSlip::find($request['csv_id']);
-        $slip = PaySlip::find($request['slipid']);
-        $user = User::find($slip->user_id);
-Log::Debug('CSV :'. print_r($csv->toArray(), true));
-Log::Debug('SLIP:'. print_r($slip->toArray(), true));
-Log::Debug('USER:'. print_r($user->toArray(), true));
-
-        // SET DATA 
-        $ym = substr($slip->target,0,4) .'年'. substr($slip->target,4,2) .'月';
-        $data['company'] = "あいうえお株式会社";
-        $data['pay_ym'] = mb_convert_kana($ym, 'N');
-        $data['name'] = $user->name;
-
-        // SET BLANK
-        $data['title'] = array_fill(0, 61, '');
-        $data['data'] = array_fill(0, 61, '');
-
-        // SET HEADER
-        $header = $csv->header;
-        array_shift($header);
-        array_shift($header);
-        $cnt = 0;
-        foreach($header as $v) {
-          $data['title'][$cnt++] = $v;
-        }
-
-        // SET DATA
-        $csvrow = $slip->slip; 
-        array_shift($csvrow);
-        array_shift($csvrow);
-        $cnt = 0;
-        foreach($csvrow as $v) {
-          $data['data'][$cnt++] = $v;
-        }
-
-        $html = view("document.slip2", $data)->render();
-Log::Debug('HTML\n'.$html);
-
-        // PDF 生成メイン　－　A4 縦に設定
-        $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        $pdf->SetAuthor('aiueo.inc.');
-        $pdf->SetCreator('aiu eo');
-
-
-        // 日本語フォント設定
-        $pdf->setFont('kozminproregular','',11);
-
-        // ページ追加
-        $pdf->addPage();
-
-        // HTMLを描画、viewの指定と変数代入 - document/pdf.blade.php
-        //$pdf->writeHTML(view("document.pdf3", $data)->render());
-        $pdf->writeHTML($html);
-
-        // 出力指定 ファイル名、拡張子、D(ダウンロード)
-//$AA =         $pdf->output('o' . '.pdf', 'S');
-          $pdf->output('laravel.pdf', 'D');
-          return;
-//        return k['pdf' => $S];
-          
-/*
-        return response(
-            $pdf->output('abc.pdf', 'S'),
-            200,
-            [
-'Content-Description' => 'File Transfer',
-'Content-Disposition' => 'attachment; filename="201808_aiueo.pdf"',
-'Content-Transfer-Encoding' => 'binary',
-'Content-Type' => 'application/pdf',
-'Content-Type' => 'application/download',
-'Content-Type' => 'application/force-download',
-'Content-Type' => 'application/octet-stream'
-            ]
-        );
-*/
-//        return ['pdf' => $html];
-     
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function html(Request $request)
-    {
-
-        mb_internal_encoding("UTF8");
-
-        // ダミーデータ設定
-        $data['company'] = "あいうえお株式会社";
-        $data['pay_ym'] = "２０１８年０８月";
-        $data['name'] = "あいう　えお";
-
-        for( $i=0; $i<=60; $i++ ){
-          $wk = sprintf('%02d', $i);
-          $data['title'.$wk] = 'タイトル'.mb_convert_kana("$wk", 'N');
-          if($i<=40) $data['data'.$wk] = 99999000 + $i;
-          else       $data['data'.$wk] = 999.00 + ($i/100);
-        }
-
-        $data['data60'] = "むかしむかし、あるところに、おじいさんとおばあさんが住んでいました。
-　おじいさんは山へ柴刈りに、おばあさんは川へ洗濯に行きました。
-　おばあさんが川で洗濯をしていると、ドンブラコ、ドンブラコと、大きな桃が流れてきました。
-「おや、これは良いおみやげになるわ」
-　おばあさんは大きな桃をひろいあげて、家に持ち帰りました。
-　そして、おじいさんとおばあさんが桃を食べようと桃を切ってみると、なんと中から元気の良い男の赤ちゃんが飛び出してきました。
-「これはきっと、神さまがくださったにちがいない」
-";
-//　子どものいなかったおじいさんとおばあさんは、大喜びです。
-//　桃から生まれた男の子を、おじいさんとおばあさんは桃太郎と名付けました。
-//　桃太郎はスクスク育って、やがて強い男の子になりました。
-//";
-        $html = view("document.slip1", $data)->render();
-Log::Debug('HTML\n'.$html);
-
-
-        // PDF 生成メイン　－　A4 縦に設定
-        $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        $pdf->SetAuthor('aiueo.inc.');
-        $pdf->SetCreator('aiu eo');
-
-
-        // 日本語フォント設定
-        $pdf->setFont('kozminproregular','',11);
-
-        // ページ追加
-        $pdf->addPage();
-
-        // HTMLを描画、viewの指定と変数代入 - document/pdf.blade.php
-        //$pdf->writeHTML(view("document.pdf3", $data)->render());
-        $pdf->writeHTML($html);
-
-        // 出力指定 ファイル名、拡張子、D(ダウンロード)
-        $pdf->output('201808_aiueo' . '.pdf', 'D');
-        return;
-          
-//        return ['html' => $html];
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\CsvSlip  $csvSlip
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(CsvSlip $csvSlip)
-    {
-        //
     }
 }
