@@ -22,6 +22,7 @@ class CreateCsvSlipsTable extends Migration
             $table->unsignedinteger('error')->default(0)->comment('エラー数');
             $table->unsignedinteger('upload_userid')->comment('登録者');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

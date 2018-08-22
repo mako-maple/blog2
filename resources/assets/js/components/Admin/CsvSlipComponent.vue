@@ -41,6 +41,12 @@
 
       <v-spacer></v-spacer>
 
+      <div class="mx-5 py-3" v-if="up.result" @dblclick="clearResult">
+        <v-alert outline type="info"    v-model="up.insert" v-html="up.insert"></v-alert>
+        <v-alert outline type="error"   v-model="up.error"  v-html="up.error"></v-alert>
+        <v-btn flat block ref="closebtn" @click="clearResult" color="secondary">閉じる</v-btn>
+      </div>
+
       <v-card-actions>
         <v-flex xs4>
           <v-text-field 
@@ -96,7 +102,12 @@
       sliptarget: 0,
       upload_YM: '',
       slip_YM: '',
-      
+
+      up: { 
+        insert: '',
+        error: '',
+        result: false,
+      },
     }),
 
     created() {
@@ -111,9 +122,12 @@
       },
 
       getSlipCsvList() {
-        //var params = new URLSearchParams()
+        var params = new URLSearchParams()
+
+        this.clearResult()
+        this.sliptarget = 0
         this.loading = true
-        axios.post('/api/admin/slip/csvlist') // , params)
+        axios.post('/api/admin/slip/csvlist', params)
 
         .then( function (response) {
           this.loading = false
@@ -129,17 +143,6 @@
         }.bind(this))
       },
 
-      csvuploaded: function(data) {
-        console.log(data)
-        
-        if (data.errors) {
-          alert(data.errors)
-          return
-        }
-
-        this.getSlipCsvList()
-      },
-
       showSlipList(d) {
         d.expanded = !d.expanded
         if (this.sliptarget == 0) {
@@ -150,6 +153,39 @@
         else {
           this.sliptarget = 0
         }
+      },
+
+      clearResult() {
+        this.up.insert = ''
+        this.up.error = ''
+        this.up.result = false
+      },
+
+      csvuploaded(data) {
+        console.log('csv uploaded')
+        this.getSlipCsvList()
+        this.clearResult()
+
+        // import ERROR
+        if (data.import.errors) {
+          this.up.error +=  data.import.errors.length + ' 件のエラーが発生しました' + '\n'
+          for(var i=0; i<data.import.errors.length; i++) {
+//            console.log(data.import.errors[i])
+            this.up.error +=  '<br>&nbsp;&nbsp;'+ data.import.errors[i].line +'　行目:　'+ data.import.errors[i].error
+          }
+        }
+
+        // import INSERT
+        if (data.import.insert) {
+          this.up.insert +=  data.import.insert.length + ' レコードを新規登録しました' + '\n'
+          for(var i=0; i<data.import.insert.length; i++) {
+//            console.log(data.import.insert[i])
+            this.up.insert +=  '<br>&nbsp;&nbsp;'+ data.import.insert[i].line +'　行目:　'+ data.import.insert[i].message
+          }
+        }
+
+        this.sliptarget = 0
+        this.up.result = true
       },
 
     },

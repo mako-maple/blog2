@@ -39,6 +39,9 @@ class PaySlip extends Model
         'slip',
         'filename',
         'download',
+        'error',
+        'checked_at',
+        'check',
     ];
 
     /**

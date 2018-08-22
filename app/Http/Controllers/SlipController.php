@@ -58,9 +58,11 @@ class SlipController extends Controller
             , 'pay_slips.slip'
             , 'pay_slips.filename'
             , 'pay_slips.download'
+            , 'pay_slips.error'
+            , 'pay_slips.checked_at'
             , 'pay_slips.created_at'
           )
-          ->join('users', 'users.id', '=', 'pay_slips.user_id')
+          ->leftjoin('users', 'users.id', '=', 'pay_slips.user_id')
           ->where('pay_slips.csv_id', $request->id)
           ->orderBy('pay_slips.line', 'asc')
           ->get();
@@ -129,16 +131,6 @@ class SlipController extends Controller
               continue;
             }
 
-            // 行データのカラム数チェック
-            if (count($value) != $headercnt) {
-              $ret['errors'][] = [
-                'line' => $line, 
-                'error' => "ヘッダーの項目数（". $headercnt ."）と行の項目数(". count($value) .")が一致しません"
-              ];
-              Log::Debug('import data error:'. print_r($ret['errors'][count($ret['errors'])-1], true));
-              continue;
-            }
-
             // CSV行データ設定
             $data = array();
             $data['csv_id'] = $csvslip_id;
@@ -147,26 +139,38 @@ class SlipController extends Controller
             $data['slip'] = $value;
             $data['loginid'] = trim($value[self::C_USERID]);
 
-            // ＰＤＦファイル名設定 - 指定があれば指定ファイル名を設定
-            if (trim($value[self::C_FILENAME]) != '') {
-              $data['filename'] = trim($value[self::C_FILENAME]);
-            }
-            else {
-              $data['filename'] = self::C_DEFAULT_FILENAME;
+            // 行データのカラム数チェック
+            if (count($value) != $headercnt) {
+              $ret['errors'][] = [
+                'line' => $line, 
+                'error' => "ヘッダーの項目数（". $headercnt ."）と行の項目数(". count($value) .")が一致しません"
+              ];
+              $data['error'] = $ret['errors'][count($ret['errors'])-1]['error'];
+              Log::Debug('import data error:'. print_r($ret['errors'][count($ret['errors'])-1], true));
+//              continue;
             }
 
             // CSVに指定されたユーザ(社員)が存在しなければエラー
-            $user = User::where('loginid', $value[self::C_USERID])->first();
-            if (!$user) {
-              $ret['errors'][] = ['line' => $line, 'error' => "該当社員が見つかりませんでした"];
-              Log::Debug('import data error:'. print_r($ret['errors'][count($ret['errors'])-1], true));
-              $errcnt++;
-              $data['user_id'] = '';
-        //      continue;
-            }
             else {
-              $inscnt++;
-              $data['user_id'] = $user['id'];
+              $user = User::where('loginid', $value[self::C_USERID])->first();
+              if (!$user) {
+                $ret['errors'][] = ['line' => $line, 'error' => "該当社員が見つかりませんでした"];
+                Log::Debug('import data error:'. print_r($ret['errors'][count($ret['errors'])-1], true));
+                $errcnt++;
+                $data['error'] = $ret['errors'][count($ret['errors'])-1]['error'];
+              //  $data['user_id'] = 'null';
+          //      continue;
+              }
+              else {
+                $inscnt++;
+                $data['user_id'] = $user['id'];
+                $ret['insert'][] = ['line' => $line, 'message' => $user['name'] ." の明細を登録しました."];
+              }
+            }
+
+            // ＰＤＦファイル名設定 - 指定があれば指定ファイル名を設定
+            if (trim($value[self::C_FILENAME]) != '') {
+              $data['filename'] = trim($value[self::C_FILENAME]);
             }
 
             // CSV行データ保存

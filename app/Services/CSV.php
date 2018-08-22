@@ -81,7 +81,7 @@ class CSV
             
             // 配列化 - ２行目以降はヘッダーに沿って配列に
             //   header-flg が true  なら、 data[999]['ヘッダー'] = データ
-            //   header-flg が false なら、 data[999][999] = データ
+            //   header-flg が false なら、 data[999][item999] = データ
             foreach ($value as $k => $v) {
                 if ($headerFlg) $data[$key][$header[$k]] = $v;
                 else            $data[$key]['item'.$k] = $v;

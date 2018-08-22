@@ -28,7 +28,12 @@
         <tr @click="showSlip(props)" v-bind:class="{'red--text': sliptarget == props.item.slipid}">
           <td class="text-xs-center">{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
           <template v-for="n in (headers.length - 1)">
-            <td :class="'text-xs-' + headers[n].align" style="white-space: nowrap;" v-text="props.item[headers[n].value]"></td>
+            <template v-if="headers[n].value == 'name' && props.item[headers[n].value] == null">
+              <td :class="'text-xs-' + headers[n].align" style="white-space: nowrap;">{{ props.item.error }} : {{ props.item.loginid }}</td>
+            </template>
+            <template v-else>
+              <td :class="'text-xs-' + headers[n].align" style="white-space: nowrap;" v-text="props.item[headers[n].value]"></td>
+            </template>
           </template>
         </tr>
       </template>
@@ -59,6 +64,7 @@
         { align: 'center', sortable: true,  value: 'line',   text: 'CSV行',  },
         { align: 'center', sortable: true,  value: 'download',  text: 'DL回数',  },
         { align: 'left',   sortable: true,  value: 'filename',  text: '修正ファイル名',  },
+        { align: 'left',   sortable: true,  value: 'checked_at',  text: '監査日',  },
 /*
         { align: 'rigth',  sortable: true,  value: 'item2',  text: 'item2',  },
         { align: 'rigth',  sortable: true,  value: 'item3',  text: 'item3',  },
@@ -114,6 +120,7 @@
           //console.log(response)
           if (response.data.slips) {
             this.tabledata = response.data.slips
+console.log(response.data.slips)
           }
           else {
             console.log('response error! slip list not found')
@@ -127,6 +134,10 @@
       },
 
       showSlip(i) {
+        if (i.item.error != null) {
+          alert('CSVエラー「'+ i.item.error + '」のためPDFを生成できません')
+          return
+        }
         var params = new URLSearchParams()
         params.append('csv_id', i.item.csv_id)
         params.append('slipid', i.item.slipid)
@@ -144,11 +155,16 @@
             // PDFデータ取得
             var blob = new Blob([response.data], { "type" : "application/pdf" })
 
+            // デフォルトファイル名設定
+            var f = '給与明細'
+            if (i.item.filename != null) {
+              f = i.item.filename
+            }
             // ファイル名設定
             var filename = ''
             filename  = this.card_title
             filename += '_'+ i.item.name.replace(/　/g,'').replace(/ /g,'').replace(/\//g,'')
-            filename += '_'+ i.item.filename
+            filename += '_'+ f
             filename += '.pdf'
                 // + moment(Date.now()).format("YYYYMMDD_HHmmss") + '.csv'
 
