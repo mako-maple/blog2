@@ -44,6 +44,9 @@ Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
   // PDF
   Route::post('/api/admin/pdf/slip',      'PDFController@slip')->name('admin.pdf.slip');
 
+  // ActionLOG
+  Route::post('/api/admin/actlog',        'ActlogController@index')->name('admin.actlog');
+
 });
 
 Route::redirect('/{any}', '/')->where('any', '.*');

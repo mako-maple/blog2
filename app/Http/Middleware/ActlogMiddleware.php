@@ -20,18 +20,23 @@ class ActlogMiddleware
     {
         $response = $next($request);
 
+        $this->actlog($request, $response->status());
+
+        return $response;
+    }
+
+    public function actlog($request, $status)
+    {
         $data = [
             'user_id' => Auth::id() > 0 ? Auth::id() : null,
             'route' => Route::currentRouteName(),
             'url' => $request -> path(),
             'method' => $request -> method(),
-            'status' => $response->status(),
+            'status' => $status,
             'message' => count($request->toArray()) != 0 ? json_encode($request->toArray()) : null, 
             'remote_addr' => $request -> ip(),
             'user_agent' => $request -> userAgent(),
         ];
         Actlog::create($data);
-
-        return $response;
     }
 }
