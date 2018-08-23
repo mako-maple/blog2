@@ -89,7 +89,14 @@
         this.getUsers()
       },
 
-      getUsers: function() {
+      serverLog(m) {
+        var params = new URLSearchParams()
+        params.append('message', m)
+        axios.post('/log', params);
+      },
+
+      getUsers() {
+        this.serverLog('getUsers')
         var params = new URLSearchParams()
         this.loading = true
         axios.post('/api/admin/user', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})

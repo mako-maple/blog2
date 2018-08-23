@@ -38,9 +38,9 @@ return [
             'channels' => ['single'],
         ],
 
-        'kuri' => [
+        'database' => [
             'driver' => 'monolog',
-            'handler' => \App\Loggers\KuriMonologHandler::class,
+            'handler' => \App\Loggers\DatabaseMonologHandler::class,
             'level' => 'debug',
         ],
 
