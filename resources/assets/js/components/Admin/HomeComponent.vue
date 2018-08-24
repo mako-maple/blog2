@@ -49,6 +49,8 @@
 
 <script>
   export default {
+    name: 'actlog',
+
     data: () => ({
       loading: true,
       search: '',
@@ -57,25 +59,21 @@
       tabledata: [],
       headers: [
         { align: 'center', sortable: false, text: 'No',     },
+        { align: 'left',   sortable: true,  text: '日時',   value: 'accessdate' },
         { align: 'left',   sortable: true,  text: '氏名',   value: 'name' },
-        { align: 'left',   sortable: true,  text: 'route',  value: 'route' },
+        { align: 'left',   sortable: true,  text: '操作',   value: 'route' },
         { align: 'left',   sortable: true,  text: 'url',    value: 'url' },
 //        { align: 'left',   sortable: true,  text: 'method', value: 'method' },
 //        { align: 'left',   sortable: true,  text: 'status', value: 'status' },
 //        { align: 'left',   sortable: true,  text: 'MSG',    value: 'message' },
         { align: 'left',   sortable: true,  text: 'IP',     value: 'remote_addr' },
         { align: 'left',   sortable: true,  text: 'UA',     value: 'user_agent' },
-        { align: 'left',   sortable: true,  text: 'Time',   value: 'accessdate' },
       ],
     }),
 
     created() {
       console.log('Admin Home Component created.')
       this.initialize()
-    },
-
-    mounted() {
-      console.log('Admin Home Component mounted..')
     },
 
     methods: {
@@ -98,6 +96,13 @@
         .catch(function (error) {
           this.loading = false
           console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
+            }
+          }
         }.bind(this))
       },
 

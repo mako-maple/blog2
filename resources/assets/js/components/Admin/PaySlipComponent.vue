@@ -45,11 +45,13 @@
 <script>
   export default {
     name: 'payslips',
+
     props: {
       target: Number,
       //csvheader: Object,
       yyyymm: String,
     },
+
     data: () => ({
       loading: true,
       search: '',
@@ -57,6 +59,8 @@
 
       card_title: '',
       show_target: '',
+      sliptarget: 0,
+
       tabledata: [],
       headers: [
         { align: 'center', sortable: false,                  text: 'No',  },
@@ -64,37 +68,15 @@
         { align: 'center', sortable: true,  value: 'line',   text: 'CSV行',  },
         { align: 'center', sortable: true,  value: 'download',  text: 'DL回数',  },
         { align: 'left',   sortable: true,  value: 'filename',  text: '修正ファイル名',  },
-        { align: 'left',   sortable: true,  value: 'checked_at',  text: '監査日',  },
-/*
-        { align: 'rigth',  sortable: true,  value: 'item2',  text: 'item2',  },
-        { align: 'rigth',  sortable: true,  value: 'item3',  text: 'item3',  },
-        { align: 'rigth',  sortable: true,  value: 'item4',  text: 'item4',  },
-        { align: 'rigth',  sortable: true,  value: 'item5',  text: 'item5',  },
-        { align: 'rigth',  sortable: true,  value: 'item6',  text: 'item6',  },
-        { align: 'rigth',  sortable: true,  value: 'item7',  text: 'item7',  },
-        { align: 'rigth',  sortable: true,  value: 'item8',  text: 'item8',  },
-        { align: 'rigth',  sortable: true,  value: 'item9',  text: 'item9',  },
-        { align: 'rigth',  sortable: true,  value: 'item10', text: 'item10', },
-        { align: 'rigth',  sortable: true,  value: 'item11', text: 'item11', },
-        { align: 'rigth',  sortable: true,  value: 'item12', text: 'item12', },
-        { align: 'rigth',  sortable: true,  value: 'item13', text: 'item13', },
-        { align: 'rigth',  sortable: true,  value: 'item14', text: 'item14', },
-        { align: 'rigth',  sortable: true,  value: 'item15', text: 'item15', },
-        { align: 'rigth',  sortable: true,  value: 'item16', text: 'item16', },
-        { align: 'rigth',  sortable: true,  value: 'item17', text: 'item17', },
-        { align: 'rigth',  sortable: true,  value: 'item18', text: 'item18', },
-        { align: 'rigth',  sortable: true,  value: 'item19', text: 'item19', },
-*/
       ],
-      sliptarget: 0,
     }),
 
     created() {
-      console.log('Component created.')
+      console.log('PaySlip Component created.')
     },
 
     beforeUpdate() {
-      console.log('Component beforeUpdate.')
+      console.log('PaySlip Component beforeUpdate.')
       this.update()
     },
 
@@ -108,7 +90,7 @@
         }
       },
 
-      initialize: function(id) {
+      initialize(id) {
         var params = new URLSearchParams()
         params.append('id', id)
 
@@ -117,10 +99,8 @@
 
         .then( function (response) {
           this.loading = false
-          //console.log(response)
           if (response.data.slips) {
             this.tabledata = response.data.slips
-console.log(response.data.slips)
           }
           else {
             console.log('response error! slip list not found')
@@ -130,6 +110,13 @@ console.log(response.data.slips)
         .catch(function (error) {
           this.loading = false
           console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
+            }
+          }
         }.bind(this))
       },
 
@@ -138,6 +125,7 @@ console.log(response.data.slips)
           alert('CSVエラー「'+ i.item.error + '」のためPDFを生成できません')
           return
         }
+
         var params = new URLSearchParams()
         params.append('csv_id', i.item.csv_id)
         params.append('slipid', i.item.slipid)
@@ -194,6 +182,13 @@ console.log(response.data.slips)
         .catch(function (error) {
           this.loading = false
           console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
+            }
+          }
         }.bind(this))
 
       },

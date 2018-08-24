@@ -54,7 +54,7 @@
 
     mounted() {
       console.log('AdminComponent mounted.')
-      console.log(process.env)
+//      console.log(process.env)
       if (process.env.MIX_FOOTER_COPY) { this.footer = process.env.MIX_FOOTER_COPY }
       if (process.env.MIX_APP_NAME) { this.title = process.env.MIX_APP_NAME }
     },
@@ -67,11 +67,15 @@
         }.bind(this))
 
         .catch(function (error) {
-          if (error.response.status === 401) {
-            var parser = new URL(this.logout)
-            location.href=parser.origin
+          console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                var parser = new URL(this.logout)
+                location.href=parser.origin
+              }
+            }
           }
-          console.log(error.response)
         }.bind(this))
       },
     },

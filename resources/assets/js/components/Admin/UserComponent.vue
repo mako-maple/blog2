@@ -16,7 +16,7 @@
 
       <v-data-table
         :headers="headers"
-        :items="users"
+        :items="tabledata"
         :pagination.sync="pagination"
         :rows-per-page-items='[10,25,50,{"text":"All","value":-1}]'
         :loading="loading"
@@ -59,7 +59,7 @@
       search: '',
       pagination: { sortBy: 'name', descending: true, },
 
-      users: [],
+      tabledata: [],
       headers: [
         { align: 'center', sortable: false, text: 'No',       },
         { align: 'left',   sortable: true,  text: '社員ID',   value: 'loginid' },
@@ -76,12 +76,8 @@
     }),
 
     created() {
-      console.log('Component created.')
+      console.log('User Component created.')
       this.initialize()
-    },
-
-    mounted() {
-      console.log('Component mounted.')
     },
 
     methods: {
@@ -89,27 +85,28 @@
         this.getUsers()
       },
 
-      serverLog(m) {
-        var params = new URLSearchParams()
-        params.append('message', m)
-        axios.post('/log', params);
-      },
-
       getUsers() {
-        this.serverLog('getUsers')
-        var params = new URLSearchParams()
         this.loading = true
-        axios.post('/api/admin/user', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        axios.post('/api/admin/user')
 
         .then( function (response) {
           this.loading = false
           console.log(response)
-          this.users = response.data.users
+          if (response.data.users) {
+            this.tabledata = response.data.users
+          }
         }.bind(this))
 
         .catch(function (error) {
           this.loading = false
-          console.log(error.response)
+          console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
+            }
+          }
         }.bind(this))
       },
 
@@ -124,34 +121,45 @@
         console.log('csv uploaded')
         this.clearResult()
 
-        // import ERROR
-        if (data.import.errors) {
-          this.up.error +=  data.import.errors.length + ' 件のエラーが発生しました' + '\n'
-          for(var i=0; i<data.import.errors.length; i++) {
-//            console.log(data.import.errors[i])
-            this.up.error +=  '<br>&nbsp;&nbsp;'+ data.import.errors[i].line +'　行目:　'+ data.import.errors[i].error
+        if (data.import) {
+          // import ERROR
+          if (data.import.errors) {
+            this.up.error +=  data.import.errors.length + ' 件のエラーが発生しました' + '\n'
+            for(var i=0; i<data.import.errors.length; i++) {
+//              console.log(data.import.errors[i])
+              this.up.error +=  '<br>&nbsp;&nbsp;'+ data.import.errors[i].line +'　行目:　'+ data.import.errors[i].error
+            }
+          }
+
+          // import INSERT
+          if (data.import.insert) {
+            this.up.insert +=  data.import.insert.length + ' レコードを新規登録しました' + '\n'
+            for(var i=0; i<data.import.insert.length; i++) {
+//              console.log(data.import.insert[i])
+              this.up.insert +=  '<br>&nbsp;&nbsp;'+ data.import.insert[i].line +'　行目:　'+ data.import.insert[i].name
+            }
+          }
+
+          // import UPDATE
+          if (data.import.update) {
+            this.up.update +=  data.import.update.length + ' レコードを更新しました' + '\n'
+            for(var i=0; i<data.import.update.length; i++) {
+//              console.log(data.import.update[i])
+              this.up.update +=  '<br>&nbsp;&nbsp;'+ data.import.update[i].line +'　行目:　'+ data.import.update[i].name
+            }
+          }
+          this.up.result = true
+        }
+        if (data.errors) {
+          if (data.errors.csvfile) {
+            this.up.error +=  data.errors.csvfile.length + ' 件のエラーが発生しました'
+            for(var i=0; i<data.errors.csvfile.length; i++) {
+              this.up.error +=  '<br>&nbsp;&nbsp;'+ data.errors.csvfile[i]
+            }
+            this.up.result = true
           }
         }
 
-        // import INSERT
-        if (data.import.insert) {
-          this.up.insert +=  data.import.insert.length + ' レコードを新規登録しました' + '\n'
-          for(var i=0; i<data.import.insert.length; i++) {
-//            console.log(data.import.insert[i])
-            this.up.insert +=  '<br>&nbsp;&nbsp;'+ data.import.insert[i].line +'　行目:　'+ data.import.insert[i].name
-          }
-        }
-
-        // import UPDATE
-        if (data.import.update) {
-          this.up.update +=  data.import.update.length + ' レコードを更新しました' + '\n'
-          for(var i=0; i<data.import.update.length; i++) {
-//            console.log(data.import.update[i])
-            this.up.update +=  '<br>&nbsp;&nbsp;'+ data.import.update[i].line +'　行目:　'+ data.import.update[i].name
-          }
-        }
-
-        this.up.result = true
       },
 
     },

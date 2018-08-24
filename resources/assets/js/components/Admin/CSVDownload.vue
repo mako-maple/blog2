@@ -34,19 +34,17 @@
     methods: {
       csvdownload(filename, url) {
         console.log('csv download btn clicked')
-        var params = new URLSearchParams()
+//        var params = new URLSearchParams()
         var config = {
           responseType: 'blob',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         }
         this.csvdownloading = true
-        axios.post(this.url, params, config)
+//        axios.post(this.url, params, config)
+        axios.post(this.url, config)
 
         .then( function (response) {
           this.csvdownloading = false
-          console.log(response)
-          console.log(response.headers)
-          console.log(this.$route)
 
           // CSV データ取得
           var blob = new Blob([response.data])
@@ -71,14 +69,21 @@
             link.setAttribute('download', filename)
             document.body.appendChild(link)
             link.click()
+            link.remove()
           }
-
         }.bind(this))
 
         .catch(function (error) {
           this.csvdownloading = false
           console.log(error)
           alert('ダウンロードに失敗しました' + error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
+            }
+          }
         }.bind(this))
       },
     },

@@ -55,7 +55,9 @@
             v-model="upload_YM" 
             name="" 
             placeholder="明細の対象年月入力(YYYYMM)" 
-            required>
+            required
+            class="px-2"
+          >
           </v-text-field>
         </v-flex>
 
@@ -63,6 +65,7 @@
           url="/api/admin/slip/upload"
           :updata="{key: 'target', value: upload_YM}" 
           @csvuploaded="csvuploaded" 
+          multiple="multiple" 
           @axios-logout="$emit('axios-logout')"
         >
         </csv_upload>
@@ -80,8 +83,9 @@
 </template>
 
 <script>
-
   export default {
+    name: 'csvslip',
+
     data: () => ({
       loading: true,
       search: '',
@@ -122,12 +126,11 @@
       },
 
       getSlipCsvList() {
-        var params = new URLSearchParams()
-
         this.clearResult()
         this.sliptarget = 0
+
         this.loading = true
-        axios.post('/api/admin/slip/csvlist', params)
+        axios.post('/api/admin/slip/csvlist')
 
         .then( function (response) {
           this.loading = false
@@ -140,11 +143,19 @@
         .catch(function (error) {
           this.loading = false
           console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
+            }
+          }
         }.bind(this))
       },
 
       showSlipList(d) {
         d.expanded = !d.expanded
+        this.up.result = false
         if (this.sliptarget == 0) {
 //          this.csvheader = d.item.header
           this.slip_YM = d.item.target

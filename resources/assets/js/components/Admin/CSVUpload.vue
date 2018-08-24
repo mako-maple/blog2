@@ -16,6 +16,7 @@
       style="display: none"
       ref="input_csvup"
       accept=".csv,.txt"
+      :multiple="multiple"
       @change="onFilePicked"
     >
   </v-btn>
@@ -30,6 +31,7 @@
       icon: String,
       title: String,
       url: String,
+      multiple: String,
       updata: Object,
     },
 
@@ -43,18 +45,23 @@
     },
 
     methods: {
-      onFilePicked: function(e) {
+      async onFilePicked(e) {
         console.log('on File Picked')
         const files = e.target.files
         if(files[0] == undefined) return
-        console.log("FILE: " + files[0].name)
-        console.log("SIZE: " + files[0].size)
 
-        // ファイル送信
-        this.csvupload(files[0])
+console.log(files)
+console.log('length: '+ files.length)
+        for (var i=0 ; i<files.length ; i++) {
+          // ファイル送信
+          console.log("FILE: " + files[i].name)
+          console.log("SIZE: " + files[i].size)
+          console.log( await this.csvupload(files[i]) )
+        }
       },
 
-      csvupload: function(file) {
+      csvupload(file) {
+        return new Promise((resolve, reject) => {
         console.log('csv upload')
         var config = {
           headers: {'Content-Type': 'multipart/form-data'}
@@ -67,31 +74,30 @@
         }
 
         this.csvuploading = true
+/*
         axios.post(this.url, formData, config)
         .then( function (response) {
           this.csvuploading = false
           console.log(response)
-
           this.$emit('csvuploaded', response.data)
         }.bind(this))
 
         .catch(function (error) {
           this.csvuploading = false
           console.log(error)
-          alert('アップロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')')
+          alert('アップロードに失敗しました' + error)
           if (error.response) {
             if (error.response.status) {
-              if (error.response.status === 401) {
-                this.$emit('axios-logout')  
-              }
-              else if (error.response.status === 419) {
-                this.$emit('axios-logout')  
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
               }
             }
           }
         }.bind(this))
+*/
+        return resolve(file)
+        })
       },
-
     },
   }
 </script>
