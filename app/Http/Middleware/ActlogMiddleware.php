@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 use App\Actlog;
 use \Route;
 
@@ -27,8 +26,9 @@ class ActlogMiddleware
 
     public function actlog($request, $status)
     {
+        $user = $request -> user();
         $data = [
-            'user_id' => Auth::id() > 0 ? Auth::id() : null,
+            'user_id' => $user ? $user->id : null,
             'route' => Route::currentRouteName(),
             'url' => $request -> path(),
             'method' => $request -> method(),
