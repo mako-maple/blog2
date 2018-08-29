@@ -16,12 +16,12 @@ import colors from 'vuetify/es5/util/colors'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify, {
   theme: {
-//    primary: colors.deepOrange.base,
-//    secondary: colors.orange.base,
-//    accent: colors.indigo.base,
-    primary: colors.indigo.base,
-    secondary: colors.blue.base,
-    accent: colors.amber.base,
+    primary: colors.deepOrange.base,
+    secondary: colors.orange.base,
+    accent: colors.indigo.base,
+//    primary: colors.indigo.base,
+//    secondary: colors.blue.base,
+//    accent: colors.amber.base,
   }
 });
 
