@@ -30,9 +30,9 @@ export default new Router({
   mode: 'history',
   routes: [
     { path: '/home/',      name: 'home',          component: home,          meta: {name: 'ホーム',   icon: 'home'}},
-    { path: '/admin/actlog', name: 'admin_actlog',component: admin_actlog,  meta: {name: '操作履歴', icon: 'developer_board'}},
     { path: '/admin/user', name: 'admin_user',    component: admin_user,    meta: {name: '社員管理', icon: 'supervisor_account'}},
     { path: '/admin/slip', name: 'admin_csvslip', component: admin_csvslip, meta: {name: '給与管理', icon: 'playlist_add'}},
+    { path: '/admin/actlog', name: 'admin_actlog',component: admin_actlog,  meta: {name: '操作履歴', icon: 'developer_board'}},
 
 
     // catch all redirect
