@@ -15,7 +15,7 @@ mix
     .disableNotifications()
     .js('resources/assets/js/app.js', 'public/js')
     .extract(['vue'])
-    .sourceMaps()
+//    .sourceMaps()
     .sass('resources/assets/sass/app.scss', 'public/css')
     .options({
         postCss: [

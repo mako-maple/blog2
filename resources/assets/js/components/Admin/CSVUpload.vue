@@ -41,7 +41,7 @@
     }),
 
     created() {
-      console.log('CSV Upload Btn Created')
+      console.log('CSV Upload Btn Component created.')
     },
 
     methods: {
@@ -74,11 +74,10 @@ console.log('length: '+ files.length)
         }
 
         this.csvuploading = true
-/*
         axios.post(this.url, formData, config)
         .then( function (response) {
           this.csvuploading = false
-          console.log(response)
+//          console.log(response)
           this.$emit('csvuploaded', response.data)
         }.bind(this))
 
@@ -94,7 +93,6 @@ console.log('length: '+ files.length)
             }
           }
         }.bind(this))
-*/
         return resolve(file)
         })
       },

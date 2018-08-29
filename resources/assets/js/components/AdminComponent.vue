@@ -2,9 +2,10 @@
   <v-app id="app">
     <v-navigation-drawer v-model="drawer" clipped fixed app >
       <v-list dense>
-        <rlink linkname='admin_home'></rlink> 
+        <rlink linkname='home'></rlink> 
         <rlink linkname='admin_user'></rlink> 
         <rlink linkname='admin_csvslip'></rlink> 
+        <rlink linkname='admin_actlog'></rlink> 
       </v-list>
     </v-navigation-drawer>
 

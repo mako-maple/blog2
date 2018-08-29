@@ -28,7 +28,7 @@
     }),
 
     created() {
-      console.log('CSV Download Btn Created')
+      console.log('CSV Download Btn Component created.')
     },
     
     methods: {

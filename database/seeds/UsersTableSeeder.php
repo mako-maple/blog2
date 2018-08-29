@@ -50,6 +50,6 @@ class UsersTableSeeder extends Seeder
                 'role' => 5,
             ],
         ]);
-        factory(App\User::class, 30)->create();
+//        factory(App\User::class, 30)->create();
     }
 }

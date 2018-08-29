@@ -91,7 +91,7 @@
 
         .then( function (response) {
           this.loading = false
-          console.log(response)
+//          console.log(response)
           if (response.data.users) {
             this.tabledata = response.data.users
           }

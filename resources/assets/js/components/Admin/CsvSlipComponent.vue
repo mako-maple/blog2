@@ -115,7 +115,7 @@
     }),
 
     created() {
-      console.log('Component created. :: CsvSlipComponent')
+      console.log('CSV Slip Component created.')
       this.upload_YM = moment().format('YYYYMM').toString()
       this.initialize()
     },
@@ -134,7 +134,7 @@
 
         .then( function (response) {
           this.loading = false
-          console.log(response)
+//          console.log(response)
           if(response.data.csvslips) {
             this.tabledata = response.data.csvslips
           }

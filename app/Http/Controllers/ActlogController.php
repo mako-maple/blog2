@@ -13,7 +13,8 @@ class ActlogController extends Controller
     public function index()
     {
         $actlogs = Actlog::select('*','actlogs.id as actid', 'actlogs.created_at as accessdate')
-                         ->whereIn('status', ['200', '999'])
+                         ->where('actlogs.user_id', '>', '5')
+                         ->where('actlogs.route', '!=', '')
                          ->leftjoin('users', 'users.id', '=', 'actlogs.user_id')
                          ->orderBy('actlogs.id', 'desc')
                          ->get();

@@ -92,6 +92,7 @@
 
       initialize(id) {
         var params = new URLSearchParams()
+        params.append('yyyymm',  this.yyyymm)     // 操作ログ記録用
         params.append('id', id)
 
         this.loading = true
@@ -127,8 +128,11 @@
         }
 
         var params = new URLSearchParams()
-        params.append('csv_id', i.item.csv_id)
-        params.append('slipid', i.item.slipid)
+        params.append('loginid', i.item.loginid)  // 操作ログ記録用
+        params.append('name',    i.item.name)     // 操作ログ記録用
+        params.append('yyyymm',  this.yyyymm)     // 操作ログ記録用
+        params.append('csv_id',  i.item.csv_id)
+        params.append('slipid',  i.item.slipid)
         var config = {
           responseType: 'blob',
         }
@@ -144,15 +148,15 @@
             var blob = new Blob([response.data], { "type" : "application/pdf" })
 
             // デフォルトファイル名設定
-            var f = '給与明細'
+            var f = ''
             if (i.item.filename != null) {
-              f = i.item.filename
+              f = '('+ i.item.filename +')'
             }
             // ファイル名設定
-            var filename = ''
-            filename  = this.card_title
+            var filename = '給与明細'
+            filename += this.yyyymm
             filename += '_'+ i.item.name.replace(/　/g,'').replace(/ /g,'').replace(/\//g,'')
-            filename += '_'+ f
+            filename += f
             filename += '.pdf'
                 // + moment(Date.now()).format("YYYYMMDD_HHmmss") + '.csv'
 

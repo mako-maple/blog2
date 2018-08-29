@@ -13,13 +13,13 @@ class PaySlip extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
-    // カラム暗号化
+    // カラム複合化
     public function getSlipAttribute($value)
     {
         return unserialize( Crypt::decrypt( $value ));
     }
 
-    // カラム複合化
+    // カラム暗号化
     public function setSlipAttribute($value)
     {
         $this->attributes['slip'] = Crypt::encrypt(serialize($value));

@@ -15,6 +15,19 @@ class Actlog extends Model
         $connection = env('DB_LOG_CONNECTION', env('DB_CONNECTION', 'mysql'));
     }
 
+    // カラム Json複合化
+    public function getMessageAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    // カラム Json化
+    public function setMessageAttribute($value)
+    {
+        $this->attributes['message'] = json_encode($value);
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *
