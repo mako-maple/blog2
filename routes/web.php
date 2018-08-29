@@ -17,10 +17,10 @@ Route::get('/', function () {
 
 //Auth::routes();
 
-Route::post('/log', 'LogController@log')->name('log');
-Route::get('/pdf/test', 'DocumentController@downloadPdf');
-Route::get('/pdf/test2', 'DocumentController@pdf');
-Route::get('/api/admin/slip/csvlist',  'SlipController@csvlist');
+//Route::post('/log', 'LogController@log')->name('log');
+//Route::get('/pdf/test', 'DocumentController@downloadPdf');
+//Route::get('/pdf/test2', 'DocumentController@pdf');
+//Route::get('/api/admin/slip/csvlist',  'SlipController@csvlist');
 
 // Authentication Routes...
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('show.login');
