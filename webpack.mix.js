@@ -22,7 +22,7 @@ mix
             require('autoprefixer')
         ],
         polyfills: [
-          'Promise'
+            'Promise'
         ]
     });
 
