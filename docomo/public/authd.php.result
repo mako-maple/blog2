@@ -1,0 +1,106 @@
+Token: 
+League\OAuth2\Client\Token\AccessToken Object ( 
+    [accessToken] => eHJIcxR9s4P5c4kxiU4*lDpPmNC-7z-M 
+    [expires] => 1536113853 
+    [refreshToken] => 
+    [uid] => 
+    [tokenid] => eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzYxMTcxNTMsImF6cCI6Im4wMF8wMTY2XzAwMDFfMDAiLCJzdWIiOiJodHRwczpcL1wvaS5teWRvY29tby5jb21cL2lkXC9GRDJpSUJmeFpYNm1XU3JKQVouenF1U35GfllQNGpDR3ZkUHlVbWF6Z35JXyIsIm5vbmNlIjoiNWQ4MjU0MmEwZGM1OGQwODllYzgyZDUzMzljYjMzN2IiLCJhdWQiOiJuMDBfMDE2Nl8wMDAxXzAwIiwiaXNzIjoiaHR0cHM6XC9cL2NvbmYudXcuZG9jb21vLm5lLmpwXC8iLCJpYXQiOjE1MzYxMTM1NTN9.91156bfiGy3olKiRfvkF5V_FH1GErDa1lB9zMKRdH1U 
+    [iss] => https://conf.uw.docomo.ne.jp/ 
+    [sub] => https://i.mydocomo.com/id/FD2iIBfxZX6mWSrJAZ.zquS~F~YP4jCGvdPyUmazg~I_ 
+    [aud] => n00_0166_0001_00 
+    [nonce] => 5d82542a0dc58d089ec82d5339cb337b 
+    [exp] => 1536117153 
+    [iat] => 1536113553 
+    [auth_time] => 
+    [acr] => 
+    [azp] => n00_0166_0001_00 
+) 
+Result: 
+{"sub":"https:\/\/i.mydocomo.com\/id\/FD2iIBfxZX6mWSrJAZ.zquS~F~YP4jCGvdPyUmazg~I_","aud":"n00_0166_0001_00","iss":"https:\/\/conf.uw.docomo.ne.jp\/"}
+Go to refresh token.
+
+* About to connect() to conf.uw.docomo.ne.jp port 443 (#2)
+*   Trying 203.138.45.25...
+* Connected to conf.uw.docomo.ne.jp (203.138.45.25) port 443 (#2)
+*   CAfile: /var/www/uq/lib/vendor/guzzle/guzzle/src/Guzzle/Http/Resources/cacert.pem
+  CApath: none
+* SSL connection using TLS_RSA_WITH_AES_128_GCM_SHA256
+* Server certificate:
+* 	subject: CN=conf.uw.docomo.ne.jp,OU=Service Design Department 01,O=NTT DOCOMO.INC,L=Chiyoda-Ku,ST=Tokyo,C=JP
+* 	start date: Jul 04 00:00:00 2018 GMT
+* 	expire date: Sep 30 12:00:00 2020 GMT
+* 	common name: conf.uw.docomo.ne.jp
+* 	issuer: CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US
+> POST /common/token HTTP/1.1
+Host: conf.uw.docomo.ne.jp
+Authorization: Basic bjAwXzAxNjZfMDAwMV8wMDo4VEI2RWhHRmNyV2dVQlNmRUFza05QdEd6cGVLQlZqcg==
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+User-Agent: Guzzle/3.9.3 curl/7.29.0 PHP/7.2.8
+Content-Length: 104
+
+* upload completely sent off: 104 out of 104 bytes
+< HTTP/1.1 400 Bad Request
+< Date: Wed, 05 Sep 2018 02:11:30 GMT
+< Pragma: no-cache
+< Content-Length: 25
+< Content-Type: application/json; charset=UTF-8
+< Cache-Control: no-store
+< Connection: close
+< 
+* Closing connection 2
+* About to connect() to conf.uw.docomo.ne.jp port 443 (#2)
+*   Trying 203.138.45.25...
+* Connected to conf.uw.docomo.ne.jp (203.138.45.25) port 443 (#2)
+*   CAfile: /var/www/uq/lib/vendor/guzzle/guzzle/src/Guzzle/Http/Resources/cacert.pem
+  CApath: none
+* SSL connection using TLS_RSA_WITH_AES_128_GCM_SHA256
+* Server certificate:
+* 	subject: CN=conf.uw.docomo.ne.jp,OU=Service Design Department 02,O=NTT DOCOMO.INC,L=Chiyoda-Ku,ST=Tokyo,C=JP
+* 	start date: Jul 04 00:00:00 2018 GMT
+* 	expire date: Sep 30 12:00:00 2020 GMT
+* 	common name: conf.uw.docomo.ne.jp
+* 	issuer: CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US
+> POST /common/token HTTP/1.1
+Host: conf.uw.docomo.ne.jp
+Authorization: Basic bjAwXzAxNjZfMDAwMV8wMDo4VEI2RWhHRmNyV2dVQlNmRUFza05QdEd6cGVLQlZqcg==
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+User-Agent: Guzzle/3.9.3 curl/7.29.0 PHP/7.2.8
+Content-Length: 104
+
+* upload completely sent off: 104 out of 104 bytes
+< HTTP/1.1 200 OK
+< Date: Wed, 05 Sep 2018 02:12:33 GMT
+< Pragma: no-cache
+< Content-Length: 532
+< Content-Type: application/json; charset=UTF-8
+< Cache-Control: no-store
+< Connection: close
+< 
+* Closing connection 2
+* About to connect() to conf.uw.docomo.ne.jp port 443 (#3)
+*   Trying 203.138.45.25...
+* Connected to conf.uw.docomo.ne.jp (203.138.45.25) port 443 (#3)
+*   CAfile: /var/www/uq/lib/vendor/guzzle/guzzle/src/Guzzle/Http/Resources/cacert.pem
+  CApath: none
+* SSL connection using TLS_RSA_WITH_AES_128_GCM_SHA256
+* Server certificate:
+* 	subject: CN=conf.uw.docomo.ne.jp,OU=Service Design Department 02,O=NTT DOCOMO.INC,L=Chiyoda-Ku,ST=Tokyo,C=JP
+* 	start date: Jul 04 00:00:00 2018 GMT
+* 	expire date: Sep 30 12:00:00 2020 GMT
+* 	common name: conf.uw.docomo.ne.jp
+* 	issuer: CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US
+> GET /common/userinfo HTTP/1.1
+Host: conf.uw.docomo.ne.jp
+User-Agent: Guzzle/3.9.3 curl/7.29.0 PHP/7.2.8
+Authorization: Bearer eHJIcxR9s4P5c4kxiU4*lDpPmNC-7z-M
+
+< HTTP/1.1 200 OK
+< Date: Wed, 05 Sep 2018 02:12:33 GMT
+< Pragma: no-cache
+< Content-Length: 150
+< Content-Type: application/json; charset=UTF-8
+< Cache-Control: no-store
+< Connection: close
+< 
+* Closing connection 3
+[Wed Sep 05 11:18:56.229613 2018] [mpm_prefork:notice] [pid 12256] AH00170: caught SIGWINCH, shutting down gracefully
