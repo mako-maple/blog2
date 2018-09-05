@@ -36,7 +36,8 @@ Log::Debug('USER:'. print_r($user->toArray(), true));
 
         // SET DATA 
         $ym = substr($slip->target,0,4) .'年'. substr($slip->target,4,2) .'月';
-        $data['pay_ym'] = mb_convert_kana($ym, 'N');
+        $data['ymd'] = $ym .'25日';
+        $data['pay_ym'] = mb_convert_kana($ym, 'N') .'度';
         $data['company'] = env('MIX_COMPANY_NAME', 'あいうえお株式会社');
         $data['name'] = $user->name;
 
@@ -62,8 +63,10 @@ Log::Debug('USER:'. print_r($user->toArray(), true));
           $data['data'][$cnt++] = $v;
         }
 
+Log::Debug('DATA: '. $data['data'][60]);
+
         // PDF用HTML生成 
-        $html = view("document.slip2", $data)->render();
+        $html = view("document.slip3", $data)->render();
 
         // PDF 生成メイン　－　A4 縦に設定
         $pdf = new TCPDF("P", "mm", "A4", true, "UTF-8" );
@@ -75,7 +78,7 @@ Log::Debug('USER:'. print_r($user->toArray(), true));
         $pdf->SetCreator(env('MIX_SLIP_CREATER', 'laravel '));
 
         // 日本語フォント設定
-        $pdf->setFont('kozminproregular','',11);
+        $pdf->setFont('kozminproregular','',10);
 
         // ページ追加
         $pdf->addPage();
