@@ -2,15 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class Request extends Model
 {
-    use Notifiable;
-
-
     // 論理削除有効化
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -21,10 +17,16 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 
-        'loginid', 
-        'role',
-        'password',
+        'uq_id',
+        'user_id',
+        'request_type_id',
+        'request_date',
+        'use_date',
+        'use',
+        'memo',
+        'accept_date',
+        'accept_type',
+        'accept_userid',
     ];
 
     /**
@@ -33,6 +35,5 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
     ];
 }
