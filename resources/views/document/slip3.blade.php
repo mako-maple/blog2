@@ -177,10 +177,10 @@
 
   <div><table border="1" width="100%" cellpadding="2" cellspacing="0" class="fontm">
       <tr>
-        <td class="title25 color1">&nbsp;&nbsp;{{ $title[40] }}</td>
-        <td class="data25  color0">{{ $data[40] }}</td>
         <td class="title25 color1">&nbsp;&nbsp;{{ $title[41] }}</td>
         <td class="data25  color0">{{ $data[41] }}</td>
+        <td class="title25 color1">&nbsp;&nbsp;{{ $title[42] }}</td>
+        <td class="data25  color0">{{ $data[42] }}</td>
       </tr>
     </table>
   </div>
@@ -193,44 +193,44 @@
         <td class="title25c">時間</td>
       </tr>
       <tr class="color0">
-        <td class="title25">&nbsp;&nbsp;{{ $title[42] }}</td>
-        <td class="data25">{{ $data[42] }}</td>
-        <td class="title25">&nbsp;&nbsp;{{ $title[49] }}</td>
-        <td class="data25">{{ $data[49] }}</td>
-      </tr>
-      <tr class="color0">
         <td class="title25">&nbsp;&nbsp;{{ $title[43] }}</td>
         <td class="data25">{{ $data[43] }}</td>
-        <td class="title25">&nbsp;&nbsp;{{ $title[51] }}</td>
-        <td class="data25">{{ $data[51] }}</td>
+        <td class="title25">&nbsp;&nbsp;{{ $title[50] }}</td>
+        <td class="data25">{{ $data[50] }}</td>
       </tr>
       <tr class="color0">
         <td class="title25">&nbsp;&nbsp;{{ $title[44] }}</td>
         <td class="data25">{{ $data[44] }}</td>
-        <td class="title25">&nbsp;&nbsp;{{ $title[52] }}</td>
-        <td class="data25">{{ $data[52] }}</td>
+        <td class="title25">&nbsp;&nbsp;{{ $title[51] }}</td>
+        <td class="data25">{{ $data[51] }}</td>
       </tr>
       <tr class="color0">
         <td class="title25">&nbsp;&nbsp;{{ $title[45] }}</td>
         <td class="data25">{{ $data[45] }}</td>
-        <td class="title25">&nbsp;&nbsp;{{ $title[53] }}</td>
-        <td class="data25">{{ $data[53] }}</td>
+        <td class="title25">&nbsp;&nbsp;{{ $title[52] }}</td>
+        <td class="data25">{{ $data[52] }}</td>
       </tr>
       <tr class="color0">
         <td class="title25">&nbsp;&nbsp;{{ $title[46] }}</td>
         <td class="data25">{{ $data[46] }}</td>
-        <td class="title25">&nbsp;&nbsp;{{ $title[54] }}</td>
-        <td class="data25">{{ $data[54] }}</td>
+        <td class="title25">&nbsp;&nbsp;{{ $title[53] }}</td>
+        <td class="data25">{{ $data[53] }}</td>
       </tr>
       <tr class="color0">
         <td class="title25">&nbsp;&nbsp;{{ $title[47] }}</td>
         <td class="data25">{{ $data[47] }}</td>
-        <td class="title25">&nbsp;&nbsp;{{ $title[55] }}</td>
-        <td class="data25">{{ $data[55] }}</td>
+        <td class="title25">&nbsp;&nbsp;{{ $title[54] }}</td>
+        <td class="data25">{{ $data[54] }}</td>
       </tr>
       <tr class="color0">
         <td class="title25">&nbsp;&nbsp;{{ $title[48] }}</td>
         <td class="data25">{{ $data[48] }}</td>
+        <td class="title25">&nbsp;&nbsp;{{ $title[55] }}</td>
+        <td class="data25">{{ $data[55] }}</td>
+      </tr>
+      <tr class="color0">
+        <td class="title25">&nbsp;&nbsp;{{ $title[49] }}</td>
+        <td class="data25">{{ $data[49] }}</td>
         <td class="title25">&nbsp;&nbsp;{{ $title[56] }}</td>
         <td class="data25">{{ $data[56] }}</td>
       </tr>
