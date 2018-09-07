@@ -30,8 +30,7 @@
       >
       </example_component>
     @elsecan('non-agree')
-      @component('agree')
-      @endcomponent
+      @yield('content')
     @else
       @yield('content')
     @endcan

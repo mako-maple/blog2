@@ -19,10 +19,19 @@ class UserController extends Controller
         return ['users' => $users];
     }
 
+    public function agree(Request $request)
+    {
+        $user = $request->user();
+        $user->role = 10;
+        $user->save();
+        return redirect('home');
+
+    }
+
     public function download()
     {
-        $users = User::where('id', '>', '5')->get(['loginid', 'name', 'role'])->toArray();
-        $header = ['loginid', 'name', 'role'];
+        $users = User::where('id', '>', '5')->get(['loginid', 'name', 'role', 'entry_date'])->toArray();
+        $header = ['loginid', 'name', 'role', 'entry_date'];
         $csv = new CSV;
         return $csv->download($users, $header, 'user.csv');
     }

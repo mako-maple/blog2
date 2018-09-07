@@ -61470,6 +61470,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 exports.default = {
   data: function data() {
@@ -61479,7 +61480,7 @@ exports.default = {
       pagination: { sortBy: 'name', descending: true },
 
       tabledata: [],
-      headers: [{ align: 'center', sortable: false, text: 'No' }, { align: 'left', sortable: true, text: '社員ID', value: 'loginid' }, { align: 'left', sortable: true, text: '氏名', value: 'name' }, { align: 'left', sortable: true, text: '権限', value: 'role' }],
+      headers: [{ align: 'center', sortable: false, text: 'No' }, { align: 'left', sortable: true, text: '社員ID', value: 'loginid' }, { align: 'left', sortable: true, text: '氏名', value: 'name' }, { align: 'left', sortable: true, text: '入社日', value: 'entry_date' }, { align: 'left', sortable: true, text: '権限', value: 'role' }],
 
       up: {
         insert: '',
@@ -61681,6 +61682,10 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", { staticClass: "text-xs-left" }, [
                             _vm._v(_vm._s(props.item.name))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "text-xs-left" }, [
+                            _vm._v(_vm._s(props.item.entry_date))
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "text-xs-left" }, [

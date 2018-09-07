@@ -30,6 +30,7 @@
             <td class="text-xs-center" xs1>{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
             <td class="text-xs-left">{{ props.item.loginid }}</td>
             <td class="text-xs-left">{{ props.item.name }}</td>
+            <td class="text-xs-left">{{ props.item.entry_date }}</td>
             <td class="text-xs-left">{{ props.item.role }} - {{ props.item.role == '10' ? 'ユーザ' : '管理者' }}</td>
           </tr>
         </template>
@@ -64,6 +65,7 @@
         { align: 'center', sortable: false, text: 'No',       },
         { align: 'left',   sortable: true,  text: '社員ID',   value: 'loginid' },
         { align: 'left',   sortable: true,  text: '氏名',     value: 'name' },
+        { align: 'left',   sortable: true,  text: '入社日',   value: 'entry_date' },
         { align: 'left',   sortable: true,  text: '権限',     value: 'role' },
       ],
 

@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('loginid')->unique()->comment('ログインID');
             $table->tinyInteger('role')->unsigned()->default(99)->comment('権限 0:system  5:admin  10:user  99:init');
             $table->string('password');
-            $table->string('entry_date')->default('19000101')->comment('入社日');
+            $table->date('entry_date')->default('2000/01/01')->comment('入社日');
             $table->rememberToken();
 
             $table->timestamps();

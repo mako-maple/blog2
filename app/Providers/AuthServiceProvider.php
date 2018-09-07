@@ -45,5 +45,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('user-only', function ($user) {
             return ($user->role == 10);
         });
+
+        // 規約同意前
+        Gate::define('non-agree', function ($user) {
+            return ($user->role == 99);
+        });
     }
 }

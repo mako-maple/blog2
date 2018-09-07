@@ -26,6 +26,7 @@ Route::get('/', function () {
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('show.login');
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('/agree', 'UserController@agree')->name('agree');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
