@@ -19,11 +19,14 @@ class Request extends Model
     protected $fillable = [
         'uq_id',
         'user_id',
+        'admin',
+
         'request_type_id',
         'request_date',
         'use_date',
         'use',
         'memo',
+
         'accept_date',
         'accept_type',
         'accept_userid',

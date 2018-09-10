@@ -17,11 +17,12 @@ class CreateRequestsTable extends Migration
             $table->increments('id');
             $table->integer('uq_id')->unsigned()->nullable()->comment('利用元有給ID');
             $table->integer('user_id')->unsigned()->comment('対象者ユーザID');
+            $table->char('admin', 1)->nullable()->comment('管理者登録フラグ： NULL:一般　1:管理者登録情報');
 
             $table->char('request_type_id', 2)->comment('申請タイプ： 0:有給　他(代休、夏季休暇...)');
             $table->datetime('request_date')->nullable()->comment('申請日時');
-            $table->date('use_date')->comment('対象日');
-            $table->decimal('use', 3, 1)->unsigned()->nullable()->comment('利用数(時間)');
+            $table->date('use_date')->nullable()->comment('対象日');
+            $table->decimal('use', 3, 2)->unsigned()->nullable()->comment('利用数(時間)');
             $table->text('memo')->nullable()->comment('メモ');
 
             $table->datetime('accept_date')->nullable()->comment('承認日時');
