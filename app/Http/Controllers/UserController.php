@@ -79,9 +79,11 @@ class UserController extends Controller
             else { 
                 Log::Debug(__CLASS__.':'.__FUNCTION__.'import insert line :'. $line .' name: '. $value['name']);
                 $value['password'] = Hash::make($value['loginid']); // とりあえず初期パスワードは loginID にしとく
-                User::create($value);
+                $user = User::create($value);
                 $ret['insert'][] = ['line' => $line, 'name' => $value['name']];
             }
+
+            // 有給処理 - 入社日から算出
         }
         return ['import' => $ret];
     }
@@ -91,10 +93,11 @@ class UserController extends Controller
         return \Validator::make($row, [
             'loginid' => 'required|string|max:100',
             'name' => 'required|string|max:255',
+            'entry_date' => 'required|date',
             'role' => [
-                'required',
+                // 'required',
                 'numeric',
-                Rule::in([5, 10]),   // role値は 5 か 10 であること
+                Rule::in([5, 10, 99]),   // role値は 5 か 10 であること
             ],
         ]);
     }
