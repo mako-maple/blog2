@@ -59202,11 +59202,11 @@ exports.default = {
   mounted: function mounted() {
     console.log('AdminComponent mounted.');
     //      console.log(process.env)
-    if (Object({"MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","MIX_DEV_SERVER":"jtv.cmnow.net:22280","MIX_COLOR_PRIMARY":"colors.deepOrange.base","MIX_COLOR_SECONDARY":"colors.orange.base","MIX_COLOR_ACCENT":"colors.indigo.base","MIX_APP_NAME":"株式会社カゲロウ","MIX_COMPANY_NAME":"株式会社カゲロウ","NODE_ENV":"development"}).MIX_FOOTER_COPY) {
-      this.footer = Object({"MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","MIX_DEV_SERVER":"jtv.cmnow.net:22280","MIX_COLOR_PRIMARY":"colors.deepOrange.base","MIX_COLOR_SECONDARY":"colors.orange.base","MIX_COLOR_ACCENT":"colors.indigo.base","MIX_APP_NAME":"株式会社カゲロウ","MIX_COMPANY_NAME":"株式会社カゲロウ","NODE_ENV":"development"}).MIX_FOOTER_COPY;
+    if (true) {
+      this.footer = "Copyright &copy; Ai ueo Inc. All Rights Reserved.";
     }
     if (true) {
-      this.title = "株式会社カゲロウ";
+      this.title = "株式会社あいうえお";
     }
   },
 
@@ -59494,11 +59494,11 @@ exports.default = {
 
   mounted: function mounted() {
     console.log('UserComponent mounted.');
-    if (Object({"MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","MIX_DEV_SERVER":"jtv.cmnow.net:22280","MIX_COLOR_PRIMARY":"colors.deepOrange.base","MIX_COLOR_SECONDARY":"colors.orange.base","MIX_COLOR_ACCENT":"colors.indigo.base","MIX_APP_NAME":"株式会社カゲロウ","MIX_COMPANY_NAME":"株式会社カゲロウ","NODE_ENV":"development"}).MIX_FOOTER_COPY) {
-      this.footer = Object({"MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","MIX_DEV_SERVER":"jtv.cmnow.net:22280","MIX_COLOR_PRIMARY":"colors.deepOrange.base","MIX_COLOR_SECONDARY":"colors.orange.base","MIX_COLOR_ACCENT":"colors.indigo.base","MIX_APP_NAME":"株式会社カゲロウ","MIX_COMPANY_NAME":"株式会社カゲロウ","NODE_ENV":"development"}).MIX_FOOTER_COPY;
+    if (true) {
+      this.footer = "Copyright &copy; Ai ueo Inc. All Rights Reserved.";
     }
     if (true) {
-      this.title = "株式会社カゲロウ";
+      this.title = "株式会社あいうえお";
     }
   },
 
