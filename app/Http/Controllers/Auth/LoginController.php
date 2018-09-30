@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
+use Socialite;
+
 class LoginController extends Controller
 {
     /*
@@ -66,5 +68,15 @@ class LoginController extends Controller
     public function username()
     {
         return 'loginid';
+    }
+
+    /**
+     * docomo の認証ページヘユーザーをリダイレクト
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function redirectToProvider()
+    {
+        return Socialite::driver('docomo')->redirect();
     }
 }

@@ -36,4 +36,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * 有給レコードを取得
+     */
+    public function UQs()
+    {
+        return $this->hasMany('App\UQ');
+    }
 }

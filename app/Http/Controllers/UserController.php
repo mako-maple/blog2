@@ -25,7 +25,6 @@ class UserController extends Controller
         $user->role = 10;
         $user->save();
         return redirect('home');
-
     }
 
     public function download()

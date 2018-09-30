@@ -15,7 +15,6 @@ class SlipController extends Controller
 {
     private const C_USERID = 'item0';
     private const C_FILENAME = 'item1';
-    private const C_DEFAULT_FILENAME = '給与明細';
 
     /**
      * Display a listing of the resource.

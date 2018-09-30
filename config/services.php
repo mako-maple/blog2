@@ -35,4 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'docomo' => [
+        'client_id' => env('DOCOMO_CLIENT_ID'),
+        'client_secret' => env('DOCOMO_CLIENT_SECRET'),
+        'redirect_uri' => env('DOCOMO_REDIRECT_URI'),
+        'auth_uri' => env('DOCOMO_AUTH_URI'),
+    ],
 ];
