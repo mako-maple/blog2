@@ -4,10 +4,16 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
+
+
+    // 論理削除有効化
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -18,6 +24,7 @@ class User extends Authenticatable
         'name', 
         'loginid', 
         'role',
+        'entry_date',
         'password',
     ];
 
@@ -29,4 +36,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * 有給レコードを取得
+     */
+    public function UQs()
+    {
+        return $this->hasMany('App\UQ');
+    }
 }

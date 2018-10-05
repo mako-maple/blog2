@@ -15,14 +15,22 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id', '>', '5')->get();
         return ['users' => $users];
+    }
+
+    public function agree(Request $request)
+    {
+        $user = $request->user();
+        $user->role = 10;
+        $user->save();
+        return redirect('home');
     }
 
     public function download()
     {
-        $users = User::get(['loginid', 'name', 'role'])->toArray();
-        $header = ['loginid', 'name', 'role'];
+        $users = User::where('id', '>', '5')->get(['loginid', 'name', 'role', 'entry_date'])->toArray();
+        $header = ['loginid', 'name', 'role', 'entry_date'];
         $csv = new CSV;
         return $csv->download($users, $header, 'user.csv');
     }
@@ -70,9 +78,11 @@ class UserController extends Controller
             else { 
                 Log::Debug(__CLASS__.':'.__FUNCTION__.'import insert line :'. $line .' name: '. $value['name']);
                 $value['password'] = Hash::make($value['loginid']); // とりあえず初期パスワードは loginID にしとく
-                User::create($value);
+                $user = User::create($value);
                 $ret['insert'][] = ['line' => $line, 'name' => $value['name']];
             }
+
+            // 有給処理 - 入社日から算出
         }
         return ['import' => $ret];
     }
@@ -82,10 +92,11 @@ class UserController extends Controller
         return \Validator::make($row, [
             'loginid' => 'required|string|max:100',
             'name' => 'required|string|max:255',
+            'entry_date' => 'required|date',
             'role' => [
-                'required',
+                // 'required',
                 'numeric',
-                Rule::in([5, 10]),   // role値は 5 か 10 であること
+                Rule::in([5, 10, 99]),   // role値は 5 か 10 であること
             ],
         ]);
     }

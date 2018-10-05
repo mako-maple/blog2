@@ -1,105 +1,56 @@
 <template>
-  <v-content>
-    <v-container fluid fill-height>
-      <v-layout justify-center fluid>
-        <v-flex xs12 offset-mx5>
-          <v-card xs12>
+  <v-flex>
+    <v-card xs12 class="m-3 px-3">
+      <v-card-title class="title">
+        <v-icon class="pr-2">{{ $route.meta.icon }}</v-icon> {{ $route.meta.name }} {{ /* 社員管理 */ }}
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
 
-            <v-card-title class="title">
-              <v-icon class="ml-2">supervisor_account</v-icon> 社員管理
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="tabledata"
+        :pagination.sync="pagination"
+        :rows-per-page-items='[10,25,50,{"text":"All","value":-1}]'
+        :loading="loading"
+        :search="search"
+        class="elevation-0 p-1"
+      >
 
-            <v-data-table
-              :headers="headers"
-              :items="users"
-              :pagination.sync="pagination"
-              :rows-per-page-items='[10,25,50,{"text":"All","value":-1}]'
-              :loading="loading"
-              :search="search"
-              class="elevation-0"
-            >
+        <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+        <template slot="items" slot-scope="props">
+          <tr @click="props.expanded = !props.expanded">
+            <td class="text-xs-center" xs1>{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
+            <td class="text-xs-left">{{ props.item.loginid }}</td>
+            <td class="text-xs-left">{{ props.item.name }}</td>
+            <td class="text-xs-left">{{ props.item.entry_date }}</td>
+            <td class="text-xs-left">{{ props.item.role }} - {{ props.item.role == '10' ? 'ユーザ' : '管理者' }}</td>
+          </tr>
+        </template>
+      </v-data-table>
 
-              <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
-              <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded">
-                  <td class="text-xs-center" xs1>{{ (props.index + 1) + (pagination.page - 1) * pagination.rowsPerPage }}</td>
-                  <td class="text-xs-left">{{ props.item.loginid }}</td>
-                  <td class="text-xs-left">{{ props.item.name }}</td>
-                  <td class="text-xs-left">{{ props.item.role }} - {{ props.item.role == '10' ? 'ユーザ' : '管理者' }}</td>
-                </tr>
-              </template>
+      <v-spacer></v-spacer>
 
-              <template slot="footer" v-if="(up_result.length + up_error.length) != 0">
-                <td colspan="100%">
-                  <v-alert
-                    v-model="up_result.length != 0"
-                    dismissible
-                    type="success"
-                    outline
-                  > 
-                    <pre>{{up_result}}</pre>
-                  </v-alert>
-                  <v-alert
-                    :value="up_error.length != 0"
-                    dismissible
-                    outline
-                    type="error"
-                  > 
-                    <pre>{{up_error}}</pre>
-                  </v-alert>
-                </td>
-              </template>
-            </v-data-table>
-
-            <v-spacer></v-spacer>
-
-            <v-card-actions>
-              <v-btn
-                color="indigo"
-                block flat
-                :loading="csvdownloading"
-                :disabled="csvdownloading"
-                @click="csvdownload"
-              >
-                <v-icon dark class="mr-1">cloud_download</v-icon> CSV ダウンロード
-                <v-progress-circular slot="csvdownload" indeterminate color="indigo" dark></v-progress-circular>
-              </v-btn>
-
-              <v-btn
-                color="indigo"
-                block flat
-                :loading="csvuploading"
-                :disabled="csvuploading"
-                @click="$refs.csvup.click()"
-              >
-                <v-icon dark class="mr-1">cloud_upload</v-icon> CSV アップロード
-                <v-progress-circular slot="csvuploading" indeterminate color="indigo" dark></v-progress-circular>
-              </v-btn>
-
-              <input
-                name="file"
-                :value="csvupfile"
-                type="file"
-                style="display: none"
-                ref="csvup"
-                accept=".csv,.txt"
-                @change="onFilePicked"
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-content>
+      <div class="mx-5 py-3" v-if="up.result" @dblclick="clearResult">
+        <v-alert outline type="info"    v-model="up.insert" v-html="up.insert"></v-alert>
+        <v-alert outline type="success" v-model="up.update" v-html="up.update"></v-alert>
+        <v-alert outline type="error"   v-model="up.error"  v-html="up.error"></v-alert>
+        <v-btn flat block ref="closebtn" @click="clearResult" color="secondary">閉じる</v-btn>
+      </div>
+      <v-card-actions>
+        <csv_download url="/api/admin/user/download"></csv_download>
+        <csv_upload url="/api/admin/user/upload" @csvuploaded="csvuploaded" @axios-logout="$emit('axios-logout')"></csv_upload>
+      </v-card-actions>
+      
+    </v-card>
+  </v-flex>
 </template>
 
 <script>
@@ -109,31 +60,26 @@
       search: '',
       pagination: { sortBy: 'name', descending: true, },
 
-      users: [],
+      tabledata: [],
       headers: [
         { align: 'center', sortable: false, text: 'No',       },
         { align: 'left',   sortable: true,  text: '社員ID',   value: 'loginid' },
         { align: 'left',   sortable: true,  text: '氏名',     value: 'name' },
+        { align: 'left',   sortable: true,  text: '入社日',   value: 'entry_date' },
         { align: 'left',   sortable: true,  text: '権限',     value: 'role' },
       ],
 
-      csvdownloading: false,
-      csvuploading: false,
-      csvupfile: null,
-      up_error: '',
-      up_result: '',
+      up: { 
+        insert: '',
+        update: '',
+        error: '',
+        result: false,
+      },
     }),
 
-    props: {
-    },
-
     created() {
-      console.log('Component created.')
+      console.log('User Component created.')
       this.initialize()
-    },
-
-    mounted() {
-      console.log('Component mounted.')
     },
 
     methods: {
@@ -141,113 +87,81 @@
         this.getUsers()
       },
 
-      getUsers: function() {
-        var params = new URLSearchParams()
+      getUsers() {
         this.loading = true
-        axios.post('/api/admin/user/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        axios.post('/api/admin/user')
 
         .then( function (response) {
           this.loading = false
-          console.log(response)
-          this.users = response.data.users
+//          console.log(response)
+          if (response.data.users) {
+            this.tabledata = response.data.users
+          }
         }.bind(this))
 
         .catch(function (error) {
           this.loading = false
-          console.log(error.response)
-        }.bind(this))
-      },
-
-      csvdownload: function() {
-        var params = new URLSearchParams()
-        var config = {
-          responseType: 'blob',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        }
-        this.csvdownloading = true
-        axios.post('/api/admin/user/download/', params, config)
-
-        .then( function (response) {
-          this.csvdownloading = false
-          console.log(response)
-
-          // Get FileName
-          var filename = 'userlist.csv'
-          response.headers['content-disposition'].split(/;|\s/).forEach( function( value ) {
-            if(value.match(/^filename=/i)) filename = value.replace(/^filename=/i,'')
-          })
-
-          // Save CSV
-          const url = window.URL.createObjectURL(new Blob([response.data]))
-          const link = document.createElement('a')
-          link.href = url
-          link.setAttribute('download', filename)
-          document.body.appendChild(link)
-          link.click()
-        }.bind(this))
-
-        .catch(function (error) {
-          this.csvdownloading = false
-          console.log(error.response)
-          alert('ダウンロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')')
-        }.bind(this))
-      },
-
-      onFilePicked: function(e) {
-        console.log('on File Picked')
-        const files = e.target.files
-        if(files[0] == undefined) return
-        console.log("FILE: " + files[0].name)
-        console.log("SIZE: " + files[0].size)
-
-        // ファイル送信
-        this.csvupload(files[0])
-      },
-
-      csvupload: function(file) {
-        console.log('csv upload')
-        var config = {
-          headers: {'Content-Type': 'multipart/form-data'}
-        }
-
-        var formData = new FormData()
-        formData.append('csvfile', file)
-
-        this.up_error = ''
-        this.up_result = ''
-        this.csvuploading = true
-        axios.post('/api/admin/user/upload/', formData, config)
-        .then( function (response) {
-          this.csvuploading = false
-          console.log(response)
-
-          // error
-          if (response.data.import.errors) {
-            for(var i=0; i<response.data.import.errors.length; i++) {
-              console.log(response.data.import.errors[i])
-              this.up_error +=  'CSV ' + response.data.import.errors[i].line + '行目 ' 
-              this.up_error +=  response.data.import.errors[i].error + '\n'
+          console.log(error)
+          if (error.response) {
+            if (error.response.status) {
+              if (error.response.status == 401 || error.response.status == 419) {
+                this.$emit('axios-logout')
+              }
             }
           }
-          if (response.data.import.insert) {
-            this.up_result +=  response.data.import.insert.length + ' レコードを新規登録しました' + '\n'
-          }
-          if (response.data.import.update) {
-            this.up_result +=  response.data.import.update.length + ' レコードを更新しました' + '\n'
-          }
         }.bind(this))
+      },
 
-        .catch(function (error) {
-          this.csvuploading = false
-          console.log(error)
-          alert('アップロードに失敗しました' + error.response.status + ' (' + error.response.statusText + ')')
-          if (error.response.status === 401) {
-            this.$emit('axios-logout')  
+      clearResult() {
+        this.up.insert = ''
+        this.up.update = ''
+        this.up.error = ''
+        this.up.result = false
+      },
+
+      csvuploaded(data) {
+        console.log('csv uploaded')
+        this.clearResult()
+
+        if (data.import) {
+          // import ERROR
+          if (data.import.errors) {
+            this.up.error +=  data.import.errors.length + ' 件のエラーが発生しました' + '\n'
+            for(var i=0; i<data.import.errors.length; i++) {
+//              console.log(data.import.errors[i])
+              this.up.error +=  '<br>&nbsp;&nbsp;'+ data.import.errors[i].line +'　行目:　'+ data.import.errors[i].error
+            }
           }
-          else if (error.response.status === 419) {
-            this.$emit('axios-logout')  
+
+          // import INSERT
+          if (data.import.insert) {
+            this.up.insert +=  data.import.insert.length + ' レコードを新規登録しました' + '\n'
+            for(var i=0; i<data.import.insert.length; i++) {
+//              console.log(data.import.insert[i])
+              this.up.insert +=  '<br>&nbsp;&nbsp;'+ data.import.insert[i].line +'　行目:　'+ data.import.insert[i].name
+            }
           }
-        }.bind(this))
+
+          // import UPDATE
+          if (data.import.update) {
+            this.up.update +=  data.import.update.length + ' レコードを更新しました' + '\n'
+            for(var i=0; i<data.import.update.length; i++) {
+//              console.log(data.import.update[i])
+              this.up.update +=  '<br>&nbsp;&nbsp;'+ data.import.update[i].line +'　行目:　'+ data.import.update[i].name
+            }
+          }
+          this.up.result = true
+        }
+        if (data.errors) {
+          if (data.errors.csvfile) {
+            this.up.error +=  data.errors.csvfile.length + ' 件のエラーが発生しました'
+            for(var i=0; i<data.errors.csvfile.length; i++) {
+              this.up.error +=  '<br>&nbsp;&nbsp;'+ data.errors.csvfile[i]
+            }
+            this.up.result = true
+          }
+        }
+
       },
 
     },

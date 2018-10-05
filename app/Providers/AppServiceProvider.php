@@ -14,6 +14,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+
+        Socialite::extend('docomo', function ($app) {
+            $config = $this->app['config']['services.docomo'];
+
+            return Socialite::buildProvider(AppServiceProvider::class, $config);
+        });
     }
 
     /**

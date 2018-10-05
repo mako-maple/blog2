@@ -45,10 +45,10 @@ class CSV
     /**
       * CSV取り込み
      * @param Request $request
-     * @param array $header
+     * @param bool $header-flg
      * @return rows
      **/
-    public function parse(Request $request)
+    public function parse(Request $request, bool $headerFlg = true)
     {
         // CSVファイル取り込み
         $file = $request->file('csvfile');
@@ -76,12 +76,15 @@ class CSV
             if($key == 0) { 
                 $header = $value;
                 Log::Debug('header', $header); 
-                continue; 
+                if($headerFlg) continue; 
             }
             
             // 配列化 - ２行目以降はヘッダーに沿って配列に
+            //   header-flg が true  なら、 data[999]['ヘッダー'] = データ
+            //   header-flg が false なら、 data[999][item999] = データ
             foreach ($value as $k => $v) {
-                $data[$key][$header[$k]] = $v;
+                if ($headerFlg) $data[$key][$header[$k]] = $v;
+                else            $data[$key]['item'.$k] = $v;
             }
         }
     

@@ -35,13 +35,23 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single', 'errorlog'],
+        ],
+
+        'database' => [
+            'driver' => 'monolog',
+            'handler' => \App\Loggers\DatabaseMonologHandler::class,
+            'level' => 'debug',
         ],
 
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
+            'formatter' => Monolog\Formatter\HtmlFormatter::class,
+            'formatter_with' => [
+                'dateFormat' => 'Y-m-d H:i:s.u',
+            ],
         ],
 
         'daily' => [
